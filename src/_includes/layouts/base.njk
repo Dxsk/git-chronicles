@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ title }} - {% if lang == "fr" %}Les Chroniques du Versionneur{% else %}The Git Chronicles{% endif %}</title>
+  <link rel="stylesheet" href="/assets/css/style.css">
+  {% block head %}{% endblock %}
+  {% if quest_id %}
+  <link rel="alternate" hreflang="fr" href="/fr/quetes/{{ quest_slug_fr }}/">
+  <link rel="alternate" hreflang="en" href="/en/quests/{{ quest_slug_en }}/">
+  {% elif cheatsheet_slug_fr %}
+  <link rel="alternate" hreflang="fr" href="/fr/cheatsheets/{{ cheatsheet_slug_fr }}/">
+  <link rel="alternate" hreflang="en" href="/en/cheatsheets/{{ cheatsheet_slug_en }}/">
+  {% else %}
+  <link rel="alternate" hreflang="fr" href="/fr/">
+  <link rel="alternate" hreflang="en" href="/en/">
+  {% endif %}
+  <link rel="alternate" hreflang="x-default" href="/fr/">
+</head>
+<body>
+  <header class="site-header">
+    <a href="/{{ lang }}/" class="logo">
+      {%- if lang == "fr" %}Les Chroniques du Versionneur{% else %}The Git Chronicles{% endif -%}
+    </a>
+    <div class="header-actions">
+      <div class="lang-switch">
+        {% if lang == "fr" %}
+          <span class="lang-active">FR</span>
+          {% if quest_id %}
+            <a href="/en/quests/{{ quest_slug_en }}/" hreflang="en">EN</a>
+          {% elif cheatsheet_slug_en %}
+            <a href="/en/cheatsheets/{{ cheatsheet_slug_en }}/" hreflang="en">EN</a>
+          {% else %}
+            <a href="/en/" hreflang="en">EN</a>
+          {% endif %}
+        {% else %}
+          {% if quest_id %}
+            <a href="/fr/quetes/{{ quest_slug_fr }}/" hreflang="fr">FR</a>
+          {% elif cheatsheet_slug_fr %}
+            <a href="/fr/cheatsheets/{{ cheatsheet_slug_fr }}/" hreflang="fr">FR</a>
+          {% else %}
+            <a href="/fr/" hreflang="fr">FR</a>
+          {% endif %}
+          <span class="lang-active">EN</span>
+        {% endif %}
+      </div>
+      <button class="nav-toggle" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    </div>
+  </header>
+
+  <div class="page-wrapper">
+    <aside class="sidebar-nav" id="nav-container"></aside>
+    <main class="main-content">
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+
+  <footer id="nav-footer"></footer>
+
+  <script>
+    window.__lang = "{{ lang }}";
+  </script>
+  <script src="/assets/js/nav.js"></script>
+  <script src="/assets/js/highlight.js"></script>
+</body>
+</html>

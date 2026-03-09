@@ -1,0 +1,203 @@
+/* ============================================================
+   Cheatsheets - CSS pour impression et affichage
+   Optimisé pour impression recto-verso A4
+   ============================================================ */
+
+/* --- Styles écran : bouton imprimer --- */
+.print-btn {
+  display: inline-block;
+  padding: 0.5rem 1.2rem;
+  background: var(--color-gold);
+  color: var(--color-brown-dark);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+}
+
+.print-btn:hover {
+  background: var(--color-gold-dark);
+}
+
+/* --- Layout cheatsheet écran --- */
+.cheatsheet {
+  columns: 2;
+  column-gap: 2rem;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.cheatsheet section {
+  break-inside: avoid;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  border: 1px solid var(--color-parchment-darker);
+  border-radius: var(--radius-sm);
+  background: var(--color-parchment-light);
+}
+
+.cheatsheet h2 {
+  font-size: 1rem;
+  margin: 0 0 0.4rem 0;
+  padding-bottom: 0.2rem;
+  border-bottom: 2px solid var(--color-gold);
+  color: var(--color-brown-dark);
+}
+
+.cheatsheet h3 {
+  font-size: 0.85rem;
+  margin: 0.5rem 0 0.2rem 0;
+  color: var(--color-brown-medium);
+}
+
+.cheatsheet pre {
+  font-size: 0.75rem;
+  margin: 0.3rem 0;
+  padding: 0.3rem 0.4rem;
+  line-height: 1.3;
+}
+
+.cheatsheet code {
+  font-size: 0.75rem;
+}
+
+.cheatsheet p {
+  margin: 0.2rem 0;
+  font-size: 0.8rem;
+}
+
+.cheatsheet ul, .cheatsheet ol {
+  margin: 0.2rem 0;
+  padding-left: 1.2rem;
+}
+
+.cheatsheet li {
+  margin: 0.1rem 0;
+  font-size: 0.8rem;
+}
+
+.cheatsheet table {
+  font-size: 0.75rem;
+  width: 100%;
+}
+
+.cheatsheet table td, .cheatsheet table th {
+  padding: 0.15rem 0.3rem;
+}
+
+.cheatsheet-header {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.cheatsheet-header h1 {
+  font-size: 1.3rem;
+  margin: 0;
+}
+
+.cheatsheet-header p {
+  font-size: 0.8rem;
+  color: var(--color-brown-medium);
+  margin: 0.2rem 0 0 0;
+}
+
+/* --- Impression --- */
+@media print {
+  /* Masquer tout ce qui n'est pas le contenu */
+  .site-header,
+  .sidebar-nav,
+  .sidebar-overlay,
+  .nav-toggle,
+  .nav-footer,
+  .site-footer,
+  .print-btn,
+  #nav-container,
+  #nav-footer {
+    display: none !important;
+  }
+
+  /* Reset page */
+  @page {
+    size: A4;
+    margin: 1.2cm 1cm;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    background: white;
+    color: black;
+    font-size: 9pt;
+  }
+
+  .page-wrapper {
+    display: block;
+  }
+
+  .main-content {
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Cheatsheet layout print */
+  .cheatsheet {
+    columns: 2;
+    column-gap: 1.5rem;
+    font-size: 8pt;
+    line-height: 1.3;
+  }
+
+  .cheatsheet section {
+    break-inside: avoid;
+    border: 0.5pt solid #999;
+    background: none;
+    padding: 0.3rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .cheatsheet h2 {
+    font-size: 10pt;
+    border-bottom: 1pt solid #333;
+  }
+
+  .cheatsheet h3 {
+    font-size: 8.5pt;
+  }
+
+  .cheatsheet pre {
+    font-size: 7pt;
+    border: 0.5pt solid #ccc;
+    background: #f5f5f5 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .cheatsheet code {
+    font-size: 7.5pt;
+  }
+
+  .cheatsheet p, .cheatsheet li {
+    font-size: 7.5pt;
+  }
+
+  .cheatsheet table {
+    font-size: 7pt;
+  }
+
+  .cheatsheet-header h1 {
+    font-size: 12pt;
+  }
+
+  .cheatsheet-header p {
+    font-size: 8pt;
+  }
+
+  /* Pas de liens soulignés */
+  a {
+    color: black;
+    text-decoration: none;
+  }
+}

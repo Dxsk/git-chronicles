@@ -1,0 +1,15 @@
+{
+  "name": "git-chronicles",
+  "version": "1.0.0",
+  "description": "An interactive Git course with fantasy narrative - bilingual (FR/EN)",
+  "scripts": {
+    "dev": "npx eleventy --serve",
+    "build": "npx eleventy",
+    "check-links": "npx eleventy && lychee _site/**/*.html",
+    "check-i18n": "node scripts/check-i18n.js"
+  },
+  "devDependencies": {
+    "@11ty/eleventy": "^3.0.0"
+  },
+  "license": "SEE LICENSE IN LICENSE-CODE"
+}

@@ -1,0 +1,21 @@
+---
+layout: layouts/base.njk
+---
+
+{% block content %}
+<article class="quest-page">
+  <div class="quest-header">
+    {% if arc %}
+    <span class="badge badge-gold">Arc {{ arc }}</span>
+    {% endif %}
+    {% if quest_number %}
+    <span class="quest-number">{% if lang == "fr" %}Quete{% else %}Quest{% endif %} {{ quest_number }}</span>
+    {% endif %}
+  </div>
+
+  <h1>{{ title }}</h1>
+  {% if subtitle %}<p class="quest-subtitle">{{ subtitle }}</p>{% endif %}
+
+  {{ content | safe }}
+</article>
+{% endblock %}
