@@ -1,0 +1,31 @@
+---
+layout: layouts/base.njk
+---
+
+<article class="codex-page">
+  <a href="/fr/codex/" class="codex-back">Retour au Codex</a>
+
+  <div class="quest-header">
+    {% if codex_type == "personnage" %}
+    <span class="badge badge-brown">Personnage</span>
+    {% elif codex_type == "lieu" %}
+    <span class="badge badge-green">Lieu</span>
+    {% endif %}
+  </div>
+
+  <h1>{{ title }}</h1>
+  {% if subtitle %}<p class="quest-subtitle">{{ subtitle }}</p>{% endif %}
+
+  {{ content | safe }}
+
+  {% if related_quests %}
+  <div class="codex-related">
+    <h2>Quetes associees</h2>
+    <ul>
+      {% for quest in related_quests %}
+      <li><a href="{{ quest.url }}">{{ quest.name }}</a></li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+</article>

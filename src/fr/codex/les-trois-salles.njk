@@ -1,0 +1,66 @@
+---
+layout: layouts/codex-entry.njk
+lang: fr
+title: "Les Trois Salles du Savoir"
+subtitle: "Cœur du système d'archivage"
+codex_type: "lieu"
+codex_slug_fr: "les-trois-salles"
+permalink: /fr/codex/les-trois-salles/
+related_quests:
+  - { number: "02", name: "Les Trois Salles du Savoir", slug: "02-les-trois-salles-du-savoir" }
+  - { number: "03", name: "Le Premier Parchemin", slug: "03-le-premier-parchemin" }
+---
+
+<section>
+  <h2>Vue d'ensemble</h2>
+
+  <div class="narrative">
+    <p>Au cœur de la Citadelle du Savoir, trois salles interconnectées forment le système d'archivage le plus ingénieux jamais conçu. Chaque chronique, chaque parchemin, chaque modification passe obligatoirement par ces trois étapes avant d'entrer dans l'histoire officielle du royaume. C'est le génie des premiers Archivistes : avoir compris qu'entre le brouillon griffonné à la hâte et le sceau définitif, il faut un espace de réflexion.</p>
+    <p>Les Trois Salles sont disposées en enfilade au rez-de-chaussée de la tour centrale. On passe de l'une à l'autre par de grandes arches de pierre sculptée, et l'atmosphère change radicalement d'une salle à la suivante - du chaos créatif au silence sacré.</p>
+  </div>
+</section>
+
+<div class="fancy-separator"></div>
+
+<section>
+  <h2>La Salle de Travail</h2>
+
+  <div class="narrative">
+    <p>La première salle est un tourbillon de vie. Des dizaines de scribes s'affairent autour de longues tables de chêne couvertes de taches d'encre. Des parchemins à moitié rédigés s'empilent en pyramides instables. Des plumes d'oie gisent entre les encriers, et l'air est chargé de l'odeur âcre de l'encre fraîche mêlée à celle du café brûlé qu'un apprenti a renversé ce matin. Ici, on écrit, on rature, on recommence. C'est le domaine du travail en cours, du brouillon imparfait, de l'idée qui cherche encore sa forme.</p>
+    <p>Les murs sont couverts d'ardoises où les scribes notent leurs idées, leurs corrections à faire, leurs questions pour le Maître Archiviste. Un grand tableau central affiche l'état de tous les travaux en cours. La Salle de Travail ne dort jamais vraiment - il y a toujours quelqu'un penché sur un texte, les yeux plissés à la lueur d'une chandelle, cherchant le mot juste ou la formulation parfaite.</p>
+  </div>
+
+  <div class="key-message">
+    <p>La Salle de Travail est l'équivalent du <strong>répertoire de travail</strong> (working directory) en Git. C'est là que tu modifies tes fichiers librement, sans que rien ne soit encore enregistré.</p>
+  </div>
+</section>
+
+<div class="fancy-separator"></div>
+
+<section>
+  <h2>La Salle de Préparation</h2>
+
+  <div class="narrative">
+    <p>Franchis l'arche de pierre polie et le contraste est saisissant. La Salle de Préparation baigne dans un silence studieux. L'éclairage est plus doux, tamisé par des vitraux représentant les grands Archivistes du passé. De longues tables de marbre blanc accueillent les parchemins sélectionnés - ceux qu'un scribe a jugés dignes d'être examinés avant leur archivage définitif.</p>
+    <p>Ici, chaque document est relu, vérifié, annoté. Un Archiviste de garde parcourt les textes avec un œil critique : l'orthographe est-elle correcte ? Les informations sont-elles exactes ? Le format respecte-t-il les standards de la Guilde ? Rien ne passe dans la Grande Archive sans avoir été préparé dans cette salle. C'est un sas, un filtre, un moment de pause salutaire entre l'élan créatif et la gravure dans le marbre.</p>
+  </div>
+
+  <div class="key-message">
+    <p>La Salle de Préparation correspond à la <strong>zone de transit</strong> (staging area / index) en Git. Tu y places les fichiers que tu veux inclure dans ton prochain commit avec <code>git add</code>.</p>
+  </div>
+</section>
+
+<div class="fancy-separator"></div>
+
+<section>
+  <h2>La Grande Archive</h2>
+
+  <div class="narrative">
+    <p>La dernière arche s'ouvre sur un spectacle à couper le souffle. La Grande Archive est une salle circulaire immense, haute comme une cathédrale, dont les murs sont entièrement tapissés d'étagères montant jusqu'à un dôme de cuivre patiné. Des milliers - non, des dizaines de milliers - de rouleaux de parchemin scellés reposent dans leurs alcôves, chacun portant une date, un auteur et un sceau de cire intacte. L'air est frais et sec, maintenu par des enchantements de préservation. Un silence profond règne, troublé seulement par le bruissement feutré des robes des Archivistes qui se déplacent entre les rayonnages.</p>
+    <p>Chaque parchemin scellé dans la Grande Archive est immuable. Une fois consigné, il ne peut plus être modifié - seulement complété par de nouvelles entrées. C'est la règle d'or de la Guilde. Si une erreur est découverte, on ne l'efface pas : on crée un nouveau parchemin qui corrige l'ancien, et les deux coexistent dans l'histoire. Ainsi, même les erreurs font partie de la chronique, et l'on peut toujours retracer le chemin exact qui a mené au présent.</p>
+  </div>
+
+  <div class="key-message">
+    <p>La Grande Archive est le <strong>dépôt</strong> (repository / .git) en Git. Chaque parchemin scellé est un <strong>commit</strong> - un instantané permanent et immuable de ton travail à un moment précis.</p>
+  </div>
+</section>
