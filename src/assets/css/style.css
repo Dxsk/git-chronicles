@@ -1073,6 +1073,18 @@ blockquote p:last-child {
   color: white;
 }
 
+.quest-subtitle {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  color: var(--color-brown-medium);
+  font-style: italic;
+  margin-top: -0.5rem;
+  margin-bottom: var(--spacing-lg);
+  padding-left: var(--spacing-md);
+  border-left: 3px solid var(--color-gold);
+  opacity: 0.85;
+}
+
 .badge-green {
   background: var(--color-green-dark);
   color: white;

@@ -8,9 +8,10 @@
     "spell": "cspell \"src/**/*.njk\" \"README*.md\"",
     "spell:fr": "cspell \"src/fr/**/*.njk\" \"README.fr.md\"",
     "spell:en": "cspell \"src/en/**/*.njk\" \"README.md\"",
-    "check": "npm run check:i18n && npm run build && npm run check:links && npm run check:a11y",
+    "check": "npm run check:i18n && npm run build && npm run check:links && npm run check:links:external && npm run check:a11y",
     "check:i18n": "node scripts/pipeline/check-i18n-parity.js",
     "check:links": "node scripts/pipeline/check-internal-links.js",
+    "check:links:external": "lychee --no-progress --root-dir _site '_site/**/*.html'",
     "check:a11y": "node scripts/pipeline/check-accessibility.js",
     "prepare": "husky"
   },

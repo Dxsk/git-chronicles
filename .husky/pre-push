@@ -1,0 +1,2 @@
+export PATH="$HOME/.nvm/versions/node/$(ls $HOME/.nvm/versions/node/ | tail -1)/bin:$HOME/.cargo/bin:$PATH"
+npm run build && lychee --no-progress --root-dir _site '_site/**/*.html'
