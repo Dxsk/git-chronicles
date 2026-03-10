@@ -68,6 +68,17 @@
 }
 
 
+/* --- WIP Banner --- */
+.wip-banner {
+  background: #f59e0b;
+  color: #1a1a1a;
+  text-align: center;
+  padding: 0.4rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
 /* --- Reset & Base --- */
 *,
 *::before,
@@ -670,6 +681,315 @@ pre[data-lang]::before {
   }
 }
 
+/* --- Three Rooms Schema (3-tree model) --- */
+.three-rooms {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin: var(--spacing-xl) 0;
+  flex-wrap: wrap;
+}
+
+.room-box {
+  flex: 1;
+  min-width: 180px;
+  max-width: 240px;
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-lg);
+  text-align: center;
+  box-shadow: var(--shadow-md);
+  border: 2px solid;
+}
+
+.room-box .room-icon {
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: var(--spacing-sm);
+}
+
+.room-box .room-name {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1.1rem;
+  display: block;
+  margin-bottom: var(--spacing-xs);
+}
+
+.room-box .room-git-name {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  opacity: 0.7;
+  display: block;
+  margin-bottom: var(--spacing-sm);
+}
+
+.room-box .room-desc {
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.room-working {
+  background: #eef2f7;
+  border-color: #7b8fa8;
+  color: #2c3e50;
+}
+
+.room-staging {
+  background: var(--color-gold-bg);
+  border-color: var(--color-gold);
+  color: var(--color-brown-dark);
+}
+
+.room-repository {
+  background: var(--color-green-bg);
+  border-color: var(--color-green-dark);
+  color: var(--color-green-dark);
+}
+
+.room-arrow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 var(--spacing-sm);
+  color: var(--color-gold-dark);
+  flex-shrink: 0;
+}
+
+.room-arrow .arrow-symbol {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.room-arrow .arrow-label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  margin-top: var(--spacing-xs);
+  white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+  .three-rooms {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+  .room-box {
+    max-width: 100%;
+  }
+  .room-arrow {
+    transform: rotate(90deg);
+    padding: var(--spacing-xs) 0;
+  }
+}
+
+/* --- PR Workflow Schema --- */
+.workflow-schema {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 0;
+  margin: var(--spacing-xl) 0;
+  flex-wrap: wrap;
+}
+
+.workflow-step {
+  border: 2px solid var(--color-gold);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md) var(--spacing-lg);
+  text-align: center;
+  min-width: 130px;
+  max-width: 170px;
+  background: var(--color-parchment-light);
+  box-shadow: var(--shadow-sm);
+}
+
+.workflow-step .step-number {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: var(--color-gold-dark);
+  display: block;
+  margin-bottom: var(--spacing-xs);
+}
+
+.workflow-step .step-title {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--color-brown-dark);
+  display: block;
+}
+
+.workflow-step .step-cmd {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-brown-medium);
+  margin-top: var(--spacing-xs);
+  display: block;
+}
+
+.workflow-arrow {
+  font-size: 1.8rem;
+  color: var(--color-gold-dark);
+  padding: 0 var(--spacing-xs);
+  flex-shrink: 0;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+}
+
+@media (max-width: 800px) {
+  .workflow-schema {
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-sm);
+  }
+  .workflow-arrow {
+    transform: rotate(90deg);
+    padding: var(--spacing-xs) 0;
+  }
+}
+
+/* --- Strategy Cards --- */
+.strategy-card {
+  border: 2px solid var(--color-gold);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+  background: var(--color-parchment-light);
+}
+
+.strategy-card h4 {
+  margin-top: 0;
+  color: var(--color-brown-dark);
+}
+
+.strategy-card.recommended {
+  border-color: #4a7c59;
+  background: linear-gradient(135deg, var(--color-parchment-light), #f0f5e8);
+}
+
+.strategy-card .badge-recommended {
+  display: inline-block;
+  background: #4a7c59;
+  color: #fff;
+  font-size: 0.75rem;
+  padding: 2px 10px;
+  border-radius: 10px;
+  margin-left: var(--spacing-sm);
+  vertical-align: middle;
+}
+
+/* --- Architecture Schema (quest 04) --- */
+.archi-schema {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin: var(--spacing-xl) 0;
+  flex-wrap: wrap;
+}
+
+.archi-box {
+  border: 2px solid var(--color-gold);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md) var(--spacing-lg);
+  text-align: center;
+  min-width: 170px;
+  max-width: 220px;
+  background: var(--color-parchment-light);
+  box-shadow: var(--shadow-sm);
+  position: relative;
+}
+
+.archi-box .box-icon {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: var(--spacing-xs);
+}
+
+.archi-box .box-title {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--color-brown-dark);
+  display: block;
+}
+
+.archi-box .box-desc {
+  font-size: 0.82rem;
+  color: var(--color-brown-medium);
+  margin-top: var(--spacing-xs);
+  display: block;
+}
+
+.archi-box.bare {
+  border-color: var(--color-brown-medium);
+  background: var(--color-parchment-dark);
+}
+
+.archi-arrow {
+  font-size: 1.8rem;
+  color: var(--color-gold-dark);
+  padding: 0 var(--spacing-sm);
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.archi-arrow-label {
+  font-size: 0.7rem;
+  display: block;
+  color: var(--color-brown-medium);
+  font-family: var(--font-mono);
+}
+
+@media (max-width: 700px) {
+  .archi-schema {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+  .archi-arrow {
+    transform: rotate(90deg);
+    padding: var(--spacing-xs) 0;
+  }
+}
+
+/* Platform comparison table */
+.platform-table td:nth-child(2),
+.platform-table td:nth-child(3),
+.platform-table th:nth-child(2),
+.platform-table th:nth-child(3) {
+  text-align: center;
+  width: 140px;
+}
+
+/* .git directory tree visualization */
+.git-tree {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  background: var(--color-code-bg);
+  color: var(--color-code-text);
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-lg);
+  line-height: 1.8;
+  border: 1px solid var(--color-code-border);
+}
+
+.git-tree .tree-folder {
+  color: #7ec8e3;
+}
+
+.git-tree .tree-file {
+  color: #e0d8c8;
+}
+
+.git-tree .tree-comment {
+  color: #888;
+  font-style: italic;
+}
+
 /* Styled numbered steps */
 .steps {
   counter-reset: step-counter;
@@ -1078,6 +1398,78 @@ tbody tr:hover {
   color: var(--color-brown-medium);
   font-style: italic;
   margin-top: var(--spacing-md);
+}
+
+
+/* --- Codex --- */
+.codex-link {
+  color: var(--color-brown-medium);
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 2px;
+}
+
+.codex-link:hover {
+  color: var(--color-gold-dark);
+  text-decoration-style: solid;
+}
+
+.codex-page {
+  max-width: 48rem;
+  margin: 0 auto;
+}
+
+.codex-back {
+  display: inline-block;
+  margin-bottom: var(--spacing-lg);
+  color: var(--color-gold-dark);
+  font-size: 0.9em;
+  text-decoration: none;
+}
+
+.codex-back:hover {
+  text-decoration: underline;
+}
+
+.codex-back::before {
+  content: "\2190 ";
+}
+
+.badge-brown {
+  background: var(--color-brown-medium);
+  color: white;
+}
+
+.codex-section-title {
+  font-family: var(--font-heading);
+  color: var(--color-brown-dark);
+  margin: var(--spacing-xl) 0 var(--spacing-md);
+  padding-bottom: var(--spacing-xs);
+  border-bottom: 2px solid var(--color-gold);
+}
+
+.codex-related {
+  margin-top: var(--spacing-2xl);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--color-parchment-dark);
+}
+
+.codex-related h2 {
+  font-size: 1.1rem;
+  color: var(--color-gold-dark);
+}
+
+.codex-related ul {
+  list-style: none;
+  padding: 0;
+}
+
+.codex-related li {
+  margin-bottom: var(--spacing-xs);
+}
+
+.codex-related a {
+  color: var(--color-brown-medium);
 }
 
 
