@@ -1,12 +1,8 @@
 ---
 layout: layouts/base.njk
+extra_css: /assets/css/print.css
 ---
 
-{% block head %}
-  <link rel="stylesheet" href="/assets/css/print.css" media="print">
-{% endblock %}
-
-{% block content %}
 <article class="cheatsheet">
   <div class="cheatsheet-header">
     <h1>{{ title }}</h1>
@@ -17,4 +13,3 @@ layout: layouts/base.njk
 
   {{ content | safe }}
 </article>
-{% endblock %}

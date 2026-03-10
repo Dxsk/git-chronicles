@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 module.exports = function(eleventyConfig) {
   eleventyConfig.addPassthroughCopy("src/assets");
+  eleventyConfig.addPassthroughCopy("src/CNAME");
 
   return {
     dir: {

@@ -113,19 +113,19 @@
     var html = '';
 
     // Home link
-    html += '<div class="nav-section">';
-    html += '<a href="/' + lang + '/" class="nav-link' + (context.type === 'home' ? ' active' : '') + '">';
+    html += '<div class="arc-group">';
+    html += '<a href="/' + lang + '/" class="quest-link' + (context.type === 'home' ? ' active' : '') + '">';
     html += (lang === 'fr' ? 'Accueil' : 'Home');
     html += '</a></div>';
 
     // Quest arcs
     QUESTS.forEach(function(arc) {
-      html += '<div class="nav-section">';
-      html += '<h3 class="nav-section-title">' + arc.title[lang] + '</h3>';
+      html += '<div class="arc-group">';
+      html += '<h3 class="arc-title">' + arc.title[lang] + '</h3>';
       arc.quests.forEach(function(q) {
         var isActive = context.type === 'quest' && context.quest && context.quest.id === q.id;
         var questLabel = (lang === 'fr' ? 'Quete' : 'Quest');
-        html += '<a href="' + questPrefix + q.slug[lang] + '/" class="nav-link' + (isActive ? ' active' : '') + '">';
+        html += '<a href="' + questPrefix + q.slug[lang] + '/" class="quest-link' + (isActive ? ' active' : '') + '">';
         html += questLabel + ' ' + q.id + ' - ' + q.name[lang];
         html += '</a>';
       });
@@ -133,11 +133,11 @@
     });
 
     // Cheatsheets
-    html += '<div class="nav-section">';
-    html += '<h3 class="nav-section-title">' + (lang === 'fr' ? 'Aide-memoire' : 'Cheatsheets') + '</h3>';
+    html += '<div class="arc-group">';
+    html += '<h3 class="arc-title">' + (lang === 'fr' ? 'Aide-memoire' : 'Cheatsheets') + '</h3>';
     CHEATSHEETS.forEach(function(cs) {
       var isActive = context.type === 'cheatsheet' && context.cheatsheet && context.cheatsheet.id === cs.id;
-      html += '<a href="' + csPrefix + cs.slug[lang] + '/" class="nav-link' + (isActive ? ' active' : '') + '">';
+      html += '<a href="' + csPrefix + cs.slug[lang] + '/" class="quest-link' + (isActive ? ' active' : '') + '">';
       html += cs.name[lang];
       html += '</a>';
     });
@@ -159,25 +159,28 @@
     var questPrefix = getQuestPathPrefix();
     var prevLabel = lang === 'fr' ? 'Precedent' : 'Previous';
     var nextLabel = lang === 'fr' ? 'Suivant' : 'Next';
-    var html = '<div class="quest-nav">';
+    var html = '';
 
     if (idx > 0) {
       var prev = allQuests[idx - 1];
-      html += '<a href="' + questPrefix + prev.slug[lang] + '/" class="quest-nav-prev">';
-      html += '&larr; ' + prevLabel + '</a>';
+      html += '<a href="' + questPrefix + prev.slug[lang] + '/" class="nav-prev">';
+      html += '<span class="nav-label">&larr; ' + prevLabel + '</span>';
+      html += '<span class="nav-title">' + prev.name[lang] + '</span>';
+      html += '</a>';
     } else {
       html += '<span></span>';
     }
 
     if (idx < allQuests.length - 1) {
       var next = allQuests[idx + 1];
-      html += '<a href="' + questPrefix + next.slug[lang] + '/" class="quest-nav-next">';
-      html += nextLabel + ' &rarr;</a>';
+      html += '<a href="' + questPrefix + next.slug[lang] + '/" class="nav-next">';
+      html += '<span class="nav-label">' + nextLabel + ' &rarr;</span>';
+      html += '<span class="nav-title">' + next.name[lang] + '</span>';
+      html += '</a>';
     } else {
       html += '<span></span>';
     }
 
-    html += '</div>';
     footer.innerHTML = html;
   }
 

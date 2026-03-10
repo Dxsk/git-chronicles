@@ -1,0 +1,26 @@
+name: Check Links
+
+on:
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '0 8 * * 1'
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+      - run: npx eleventy
+
+      - uses: lycheeverse/lychee-action@v2
+        with:
+          args: --no-progress _site/**/*.html
+          fail: true
