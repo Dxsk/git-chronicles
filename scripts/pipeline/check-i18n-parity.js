@@ -12,9 +12,11 @@ const SRC = path.resolve(__dirname, "../../src");
 const PAIRS = [
   { fr: "fr/quetes", en: "en/quests" },
   { fr: "fr/cheatsheets", en: "en/cheatsheets" },
+  { fr: "fr/codex", en: "en/codex", byFilename: true },
 ];
 
 let errors = 0;
+let matched = 0;
 
 function getFrontmatter(filePath) {
   const content = fs.readFileSync(filePath, "utf8");
@@ -42,9 +44,32 @@ function getSlugMap(dir) {
   return map;
 }
 
+function getFileSet(dir) {
+  if (!fs.existsSync(dir)) return new Set();
+  const files = new Set();
+  for (const file of fs.readdirSync(dir)) {
+    if (file.endsWith(".njk") && file !== "index.njk") files.add(file);
+  }
+  return files;
+}
+
 for (const pair of PAIRS) {
   const frDir = path.join(SRC, pair.fr);
   const enDir = path.join(SRC, pair.en);
+
+  if (pair.byFilename) {
+    // Compare by file count (codex files have different names across languages)
+    const frFiles = getFileSet(frDir);
+    const enFiles = getFileSet(enDir);
+    if (frFiles.size !== enFiles.size) {
+      console.error(`COUNT MISMATCH: ${pair.fr}/ has ${frFiles.size} files, ${pair.en}/ has ${enFiles.size} files`);
+      errors++;
+    } else {
+      matched += frFiles.size;
+    }
+    continue;
+  }
+
   const frMap = getSlugMap(frDir);
   const enMap = getSlugMap(enDir);
 
@@ -90,5 +115,6 @@ if (errors > 0) {
   console.error(`\ni18n parity: ${errors} issue(s) found`);
   process.exit(1);
 } else {
-  console.log(`i18n parity: all ${PAIRS.map(p => getSlugMap(path.join(SRC, p.fr)).size).reduce((a, b) => a + b, 0)} pairs matched`);
+  const questPairs = PAIRS.filter(p => !p.byFilename).map(p => getSlugMap(path.join(SRC, p.fr)).size).reduce((a, b) => a + b, 0);
+  console.log(`i18n parity: all ${questPairs + matched} pairs matched`);
 }

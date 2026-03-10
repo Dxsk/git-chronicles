@@ -3,13 +3,13 @@ layout: layouts/base.njk
 ---
 
 <article class="codex-page">
-  <a href="/fr/codex/" class="codex-back">Retour au Codex</a>
+  <a href="/{{ lang }}/codex/" class="codex-back">{% if lang == "fr" %}Retour au Codex{% else %}Back to the Codex{% endif %}</a>
 
   <div class="quest-header">
-    {% if codex_type == "personnage" %}
-    <span class="badge badge-brown">Personnage</span>
-    {% elif codex_type == "lieu" %}
-    <span class="badge badge-green">Lieu</span>
+    {% if codex_type == "personnage" or codex_type == "character" %}
+    <span class="badge badge-brown">{% if lang == "fr" %}Personnage{% else %}Character{% endif %}</span>
+    {% elif codex_type == "lieu" or codex_type == "place" %}
+    <span class="badge badge-green">{% if lang == "fr" %}Lieu{% else %}Place{% endif %}</span>
     {% endif %}
   </div>
 
@@ -20,10 +20,14 @@ layout: layouts/base.njk
 
   {% if related_quests %}
   <div class="codex-related">
-    <h2>Quêtes associées</h2>
+    <h2>{% if lang == "fr" %}Quêtes associées{% else %}Related Quests{% endif %}</h2>
     <ul>
       {% for quest in related_quests %}
+      {% if lang == "fr" %}
       <li><a href="/fr/quetes/{{ quest.slug }}/">Quête {{ quest.number }} - {{ quest.name }}</a></li>
+      {% else %}
+      <li><a href="/en/quests/{{ quest.slug }}/">Quest {{ quest.number }} - {{ quest.name }}</a></li>
+      {% endif %}
       {% endfor %}
     </ul>
   </div>

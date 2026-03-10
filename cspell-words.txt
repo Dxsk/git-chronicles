@@ -15,8 +15,10 @@ Torvalds
 # Lieux / Locations
 Citadelle
 Sombrebois
+Darkwood
 Valombre
 Valmarbré
+Valmarbre
 Versalia
 
 # Termes fantasy / Fantasy terms
@@ -130,6 +132,9 @@ sauvegardia
 considèrera
 réplicas
 Atlassienne
+Seraphine
+calligraphed
+ceilinged
 Gerbers
 Hipp
 
