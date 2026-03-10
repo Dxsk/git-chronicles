@@ -20,10 +20,10 @@ layout: layouts/base.njk
 
   {% if related_quests %}
   <div class="codex-related">
-    <h2>Quetes associees</h2>
+    <h2>Quêtes associées</h2>
     <ul>
       {% for quest in related_quests %}
-      <li><a href="{{ quest.url }}">{{ quest.name }}</a></li>
+      <li><a href="/fr/quetes/{{ quest.slug }}/">Quête {{ quest.number }} - {{ quest.name }}</a></li>
       {% endfor %}
     </ul>
   </div>
