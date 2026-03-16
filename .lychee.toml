@@ -1,0 +1,8 @@
+# Lychee link checker configuration
+# https://lychee.cli.rs/configuration/
+
+# Exclude URLs that are expected to return non-200 status codes
+exclude = [
+  # The 404 page references its own URL which naturally returns 404
+  "https://git.learning.dxscloud.fr/404.html"
+]

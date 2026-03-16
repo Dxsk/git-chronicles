@@ -162,6 +162,12 @@ hostable
 unintegrated
 gamified
 dxscloud
+Dxsk
+
+# AI/SEO related terms
+llms
+Applebot
+Bytespider
 
 # Structure / Paths
 quetes

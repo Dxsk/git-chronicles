@@ -48,6 +48,11 @@
       "filename": "src/_includes/**",
       "language": "en,fr-fr",
       "dictionaries": ["project-words"]
+    },
+    {
+      "filename": "src/*.njk",
+      "language": "en,fr-fr",
+      "dictionaries": ["project-words"]
     }
   ],
   "patterns": [
@@ -58,7 +63,8 @@
     { "name": "css-classes", "pattern": "class=\"[^\"]*\"" },
     { "name": "code-blocks", "pattern": "<code>[^<]*</code>" },
     { "name": "pre-blocks", "pattern": "<pre[^>]*>[\\s\\S]*?</pre>" },
-    { "name": "html-entities", "pattern": "&\\w+;" }
+    { "name": "html-entities", "pattern": "&\\w+;" },
+    { "name": "markdown-link-urls", "pattern": "\\]\\([^)]+\\)" }
   ],
   "ignoreRegExpList": [
     "html-tags",
@@ -68,6 +74,7 @@
     "css-classes",
     "code-blocks",
     "pre-blocks",
-    "html-entities"
+    "html-entities",
+    "markdown-link-urls"
   ]
 }
