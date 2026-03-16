@@ -143,6 +143,7 @@ Gerbers
 Hipp
 
 # Mots volontairement mal orthographiés dans les exercices / Intentional misspellings
+Addd
 Ajoouter
 Stashe
 committe
