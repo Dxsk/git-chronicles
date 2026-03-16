@@ -5,19 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ title }} - {% if lang == "fr" %}Les Chroniques du Versionneur{% else %}The Git Chronicles{% endif %}</title>
   <link rel="stylesheet" href="/assets/css/style.css">
-  <link rel="stylesheet" href="/pagefind/pagefind-ui.css">
+  <link rel="stylesheet" href="/pagefind/pagefind-ui.css" media="print" onload="this.media='all'">
   {% if extra_css %}<link rel="stylesheet" href="{{ extra_css }}" media="print">{% endif %}
   {% if quest_id %}
-  <link rel="alternate" hreflang="fr" href="/fr/quetes/{{ quest_slug_fr }}/">
-  <link rel="alternate" hreflang="en" href="/en/quests/{{ quest_slug_en }}/">
+  <link rel="alternate" hreflang="fr" href="{{ site.url }}/fr/quetes/{{ quest_slug_fr }}/">
+  <link rel="alternate" hreflang="en" href="{{ site.url }}/en/quests/{{ quest_slug_en }}/">
   {% elif cheatsheet_slug_fr %}
-  <link rel="alternate" hreflang="fr" href="/fr/cheatsheets/{{ cheatsheet_slug_fr }}/">
-  <link rel="alternate" hreflang="en" href="/en/cheatsheets/{{ cheatsheet_slug_en }}/">
+  <link rel="alternate" hreflang="fr" href="{{ site.url }}/fr/cheatsheets/{{ cheatsheet_slug_fr }}/">
+  <link rel="alternate" hreflang="en" href="{{ site.url }}/en/cheatsheets/{{ cheatsheet_slug_en }}/">
   {% else %}
-  <link rel="alternate" hreflang="fr" href="/fr/">
-  <link rel="alternate" hreflang="en" href="/en/">
+  <link rel="alternate" hreflang="fr" href="{{ site.url }}/fr/">
+  <link rel="alternate" hreflang="en" href="{{ site.url }}/en/">
   {% endif %}
-  <link rel="alternate" hreflang="x-default" href="/fr/">
+  <link rel="alternate" hreflang="x-default" href="{{ site.url }}/fr/">
   <link rel="prefetch" href="/ai.txt">
   <link rel="prefetch" href="/llms.txt">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
@@ -118,13 +118,46 @@
       {{ content | safe }}
       <nav class="nav-footer" id="nav-footer"></nav>
     </main>
+    <aside class="toc-sidebar" id="toc-sidebar">
+      <nav class="toc-nav" aria-label="{% if lang == 'fr' %}Sommaire de la page{% else %}On this page{% endif %}">
+        <div class="toc-title">{% if lang == "fr" %}Sur cette page{% else %}On this page{% endif %}</div>
+        <ul class="toc-list" id="toc-list"></ul>
+      </nav>
+    </aside>
   </div>
+
+  <footer class="site-footer">
+    <div class="footer-content">
+      <p>
+        {% if lang == "fr" %}
+          <a href="https://github.com/Dxsk/git-chronicles">Les Chroniques du Versionneur</a>, un projet libre et open source par <a href="https://github.com/Dxsk" target="_blank" rel="noopener">🇫🇷 Dxsk</a>.
+        {% else %}
+          <a href="https://github.com/Dxsk/git-chronicles">The Git Chronicles</a>, a free and open source project by <a href="https://github.com/Dxsk" target="_blank" rel="noopener">🇫🇷 Dxsk</a>.
+        {% endif %}
+      </p>
+      <p class="footer-thanks">
+        {% if lang == "fr" %}
+          Merci à <a href="https://github.com/Andralax" target="_blank" rel="noopener">@Andralax</a> pour ses idées et sa relecture.
+        {% else %}
+          Thanks to <a href="https://github.com/Andralax" target="_blank" rel="noopener">@Andralax</a> for ideas and proofreading.
+        {% endif %}
+      </p>
+      <p class="footer-license">
+        {% if lang == "fr" %}
+          Code sous licence <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener">MIT</a> · Contenu sous licence <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>
+        {% else %}
+          Code licensed under <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener">MIT</a> · Content licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>
+        {% endif %}
+      </p>
+    </div>
+  </footer>
 
   <script>
     window.__lang = "{{ lang }}";
   </script>
-  <script src="/assets/js/nav.js"></script>
-  <script src="/assets/js/highlight.js"></script>
+  <script src="/assets/js/nav.js" defer></script>
+  <script src="/assets/js/highlight.js" defer></script>
+  <script src="/assets/js/toc.js" defer></script>
 
   <!-- Search FAB + modal -->
   <button class="search-fab" id="search-fab" aria-label="{% if lang == 'fr' %}Rechercher{% else %}Search{% endif %}">
@@ -144,7 +177,7 @@
     </div>
   </div>
 
-  <script src="/pagefind/pagefind-ui.js"></script>
+  <script src="/pagefind/pagefind-ui.js" defer></script>
   <script>
     (function() {
       var fab = document.getElementById("search-fab");
