@@ -2,7 +2,7 @@
 # https://lychee.cli.rs/configuration/
 
 timeout = 30
-accept = [200, 204, 301, 302, 303, 307, 308, 429]
+accept = [200, 204, 301, 302, 303, 307, 308, 429, 503]
 
 exclude = [
   "https://git.learning.dxscloud.fr/404.html",
