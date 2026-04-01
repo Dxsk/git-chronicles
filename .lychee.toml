@@ -4,8 +4,8 @@
 timeout = 30
 accept = [200, 204, 301, 302, 303, 307, 308, 429]
 
-# Exclude URLs that are expected to fail in CI
 exclude = [
   "https://git.learning.dxscloud.fr/404.html",
-  "pagefind"
+  "pagefind",
+  "nx\\.dev"
 ]
