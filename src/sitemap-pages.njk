@@ -1,0 +1,22 @@
+---
+permalink: /sitemap-pages.xml
+eleventyExcludeFromCollections: true
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  {%- for page in collections.all %}
+  {%- if page.url and page.url != false and '/quetes/' not in page.url and '/quests/' not in page.url and '/cheatsheets/' not in page.url and '/codex/' not in page.url %}
+  <url>
+    <loc>{{ site.url }}{{ page.url }}</loc>
+    <lastmod>{{ page.date.toISOString() }}</lastmod>
+    {%- if page.url == '/fr/' or page.url == '/en/' %}
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    {%- else %}
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+    {%- endif %}
+  </url>
+  {%- endif %}
+  {%- endfor %}
+</urlset>

@@ -20,7 +20,7 @@ This course was originally made for my friends. But given the work it takes to m
 
 ## Content
 
-The course contains **23 quests** across 5 narrative arcs, from `git init` to CI/CD and Radicle. There are also **6 bonus quests** called "The Forgotten Paths" covering specialized domains: LFS, Data Science, Monorepos, Hardware, GitOps and Design.
+The course contains **29 quests** across 5 narrative arcs, from `git init` to CI/CD and Radicle. There are also **6 bonus quests** called "The Forgotten Paths" covering specialized domains: LFS, Data Science, Monorepos, Hardware, GitOps and Design.
 
 On top of that, **4 printable cheatsheets** (Git Essentials, Advanced Git, Git LFS, Radicle) and **verification scripts** for each quest in Bash and PowerShell, with `--lang fr/en` support.
 

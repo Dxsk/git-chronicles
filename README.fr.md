@@ -20,7 +20,7 @@ Le thème fantasy (guildes, quêtes, parchemins) n'est pas juste décoratif. Il 
 
 ## Contenu
 
-Le cours contient **23 quêtes** réparties en 5 arcs narratifs, de `git init` jusqu'au CI/CD et Radicle. Il y a aussi **6 quêtes bonus** appelées « Les Sentiers Oubliés » qui couvrent des domaines spécifiques : LFS, Data Science, Monorepos, Hardware, GitOps et Design.
+Le cours contient **29 quêtes** réparties en 5 arcs narratifs, de `git init` jusqu'au CI/CD et Radicle. Il y a aussi **6 quêtes bonus** appelées « Les Sentiers Oubliés » qui couvrent des domaines spécifiques : LFS, Data Science, Monorepos, Hardware, GitOps et Design.
 
 En complément, tu trouveras **4 aide-mémoire** imprimables (Git Essentiel, Git Avancé, Git LFS, Radicle) ainsi que des **scripts de vérification** pour chaque quête, disponibles en Bash et PowerShell avec le support `--lang fr/en`.
 

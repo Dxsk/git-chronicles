@@ -21,17 +21,27 @@
   <link rel="alternate" hreflang="x-default" href="{{ site.url }}/fr/">
   <link rel="prefetch" href="/ai.txt">
   <link rel="prefetch" href="/llms.txt">
+  <link rel="author" href="/humans.txt">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
   <meta name="theme-color" content="#8b4513">
-  {% set meta_desc_fr = subtitle | default('Apprenez Git à travers une aventure heroic fantasy. Un cours gamifié et bilingue avec 23 quêtes, des cheatsheets et des exercices pratiques. 100% gratuit et open source.') %}
-  {% set meta_desc_en = subtitle | default('Learn Git through an epic fantasy adventure. A gamified, bilingual course with 23 quests, cheatsheets and hands-on exercises. 100% free and open source.') %}
+  {% set meta_desc_fr = subtitle | default('Apprendre Git gratuitement avec un cours interactif et gamifie. 29 exercices pratiques dans un univers heroic fantasy. Tutoriel Git complet du debutant au CI/CD. Bilingue FR/EN, 100% gratuit et open source.') %}
+  {% set meta_desc_en = subtitle | default('Learn Git for free with an interactive, gamified course. 29 hands-on exercises in a fantasy RPG universe. Complete Git tutorial from beginner to CI/CD. Bilingual FR/EN, 100% free and open source.') %}
   {% set meta_desc = meta_desc_fr if lang == "fr" else meta_desc_en %}
-  {% set meta_title = title + " - " + ("Les Chroniques du Versionneur" if lang == "fr" else "The Git Chronicles") %}
+  {% set meta_title = title + " - " + ("Les Chroniques du Versionneur | Cours Git Gratuit" if lang == "fr" else "The Git Chronicles | Free Git Course") %}
   {% set site_name = "Les Chroniques du Versionneur" if lang == "fr" else "The Git Chronicles" %}
   <meta name="description" content="{{ meta_desc }}">
+  {% if quest_id %}
+  <meta name="keywords" content="Git, {{ subtitle }}, {% if lang == 'fr' %}apprendre Git, tutoriel Git, cours Git gratuit, exercices Git, formation Git, Git pour debutant, gestion de version{% else %}learn Git, Git tutorial, free Git course, Git exercises, Git training, Git for beginners, version control{% endif %}">
+  {% elif cheatsheet_slug_fr %}
+  <meta name="keywords" content="Git, {{ title }}, {% if lang == 'fr' %}aide-memoire Git, cheatsheet Git, commandes Git, reference rapide Git{% else %}Git cheatsheet, Git commands, Git quick reference, Git cheat sheet{% endif %}">
+  {% elif codex_type %}
+  <meta name="keywords" content="Git, {{ title }}, {% if lang == 'fr' %}apprendre Git, univers, lore, gamifie{% else %}learn Git, universe, lore, gamified{% endif %}">
+  {% else %}
+  <meta name="keywords" content="Git, {% if lang == 'fr' %}apprendre Git, cours Git gratuit, tutoriel Git, exercices Git, formation Git debutant, gestion de version, GitHub, GitLab, CI/CD, heroic fantasy, gamifie, interactif{% else %}learn Git, free Git course, Git tutorial, Git exercises, Git training beginner, version control, GitHub, GitLab, CI/CD, heroic fantasy, gamified, interactive{% endif %}">
+  {% endif %}
   <link rel="canonical" href="{{ site.url }}{{ page.url }}">
   <!-- Open Graph -->
-  <meta property="og:type" content="website">
+  <meta property="og:type" content="{% if quest_id %}article{% else %}website{% endif %}">
   <meta property="og:locale" content="{{ 'fr_FR' if lang == 'fr' else 'en_US' }}">
   <meta property="og:locale:alternate" content="{{ 'en_US' if lang == 'fr' else 'fr_FR' }}">
   <meta property="og:site_name" content="{{ site_name }}">
@@ -42,6 +52,12 @@
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="{{ site_name }}">
+  {% if quest_id %}
+  <meta property="article:section" content="{% if lang == 'fr' %}Quete{% else %}Quest{% endif %} {{ quest_number }}">
+  <meta property="article:tag" content="Git">
+  <meta property="article:tag" content="{{ subtitle }}">
+  <meta property="article:published_time" content="{{ page.date.toISOString() }}">
+  {% endif %}
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="{{ meta_title }}">
@@ -52,7 +68,7 @@
     "@context": "https://schema.org",
     "@type": "Course",
     "name": "{% if lang == 'fr' %}Les Chroniques du Versionneur{% else %}The Git Chronicles{% endif %}",
-    "description": "{% if lang == 'fr' %}Un cours Git interactif et gamifié avec un récit heroic fantasy. 23 quêtes, de git init au CI/CD. Bilingue FR/EN, gratuit et open source.{% else %}An interactive, gamified Git course with a fantasy narrative. 23 quests from git init to CI/CD. Bilingual FR/EN, free and open source.{% endif %}",
+    "description": "{% if lang == 'fr' %}Apprendre Git gratuitement avec un cours interactif et gamifie. 29 exercices pratiques dans un univers heroic fantasy, de git init au CI/CD. Tutoriel Git complet, bilingue FR/EN, 100% gratuit et open source.{% else %}Learn Git for free with an interactive, gamified course. 29 hands-on exercises in a fantasy RPG universe, from git init to CI/CD. Complete Git tutorial, bilingual FR/EN, 100% free and open source.{% endif %}",
     "url": "{{ site.url }}/{{ lang }}/",
     "provider": {
       "@type": "Person",
@@ -63,12 +79,109 @@
     "isAccessibleForFree": true,
     "license": "https://opensource.org/licenses/MIT",
     "teaches": ["Git", "Version Control", "CI/CD", "GitHub", "GitLab", "Git LFS", "Radicle"],
-    "numberOfCredits": 23,
+    "numberOfCredits": 29,
     "hasCourseInstance": {
       "@type": "CourseInstance",
       "courseMode": "online",
-      "courseWorkload": "23 quests + 6 bonus quests"
+      "courseWorkload": "29 quests (23 main + 6 bonus)"
     }
+  }
+  </script>
+  {% if quest_id %}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LearningResource",
+    "name": "{{ title }}",
+    "description": "{{ subtitle }}",
+    "inLanguage": "{{ lang }}",
+    "url": "{{ site.url }}{{ page.url }}",
+    "isPartOf": {
+      "@type": "Course",
+      "name": "{% if lang == 'fr' %}Les Chroniques du Versionneur{% else %}The Git Chronicles{% endif %}",
+      "url": "{{ site.url }}/{{ lang }}/"
+    },
+    "learningResourceType": "quest",
+    "position": "{{ quest_number }}",
+    "teaches": "{{ subtitle }}",
+    "isAccessibleForFree": true,
+    "author": { "@type": "Person", "name": "Dxsk" }
+  }
+  </script>
+  {% elif cheatsheet_slug_fr %}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "name": "{{ title }}",
+    "headline": "{{ title }}",
+    "inLanguage": "{{ lang }}",
+    "url": "{{ site.url }}{{ page.url }}",
+    "isPartOf": {
+      "@type": "Course",
+      "name": "{% if lang == 'fr' %}Les Chroniques du Versionneur{% else %}The Git Chronicles{% endif %}",
+      "url": "{{ site.url }}/{{ lang }}/"
+    },
+    "isAccessibleForFree": true,
+    "author": { "@type": "Person", "name": "Dxsk" }
+  }
+  </script>
+  {% elif codex_type %}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "name": "{{ title }}",
+    "headline": "{{ title }}",
+    "description": "{{ subtitle | default(title) }}",
+    "inLanguage": "{{ lang }}",
+    "url": "{{ site.url }}{{ page.url }}",
+    "articleSection": "Codex",
+    "isAccessibleForFree": true,
+    "author": { "@type": "Person", "name": "Dxsk" }
+  }
+  </script>
+  {% endif %}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "{% if lang == 'fr' %}Accueil{% else %}Home{% endif %}",
+        "item": "{{ site.url }}/{{ lang }}/"
+      }
+      {% if quest_id %},{
+        "@type": "ListItem",
+        "position": 2,
+        "name": "{% if lang == 'fr' %}Quetes{% else %}Quests{% endif %}"
+      },{
+        "@type": "ListItem",
+        "position": 3,
+        "name": "{{ title }}"
+      }
+      {% elif cheatsheet_slug_fr %},{
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Cheatsheets"
+      },{
+        "@type": "ListItem",
+        "position": 3,
+        "name": "{{ title }}"
+      }
+      {% elif codex_type %},{
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Codex"
+      },{
+        "@type": "ListItem",
+        "position": 3,
+        "name": "{{ title }}"
+      }
+      {% endif %}
+    ]
   }
   </script>
 </head>

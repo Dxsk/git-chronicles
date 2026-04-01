@@ -3,13 +3,20 @@ permalink: /sitemap.xml
 eleventyExcludeFromCollections: true
 ---
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  {%- for page in collections.all %}
-  {%- if page.url and page.url != false %}
-  <url>
-    <loc>{{ site.url }}{{ page.url }}</loc>
-    <lastmod>{{ page.date.toISOString() }}</lastmod>
-  </url>
-  {%- endif %}
-  {%- endfor %}
-</urlset>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <sitemap>
+    <loc>{{ site.url }}/sitemap-pages.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>{{ site.url }}/sitemap-quests-fr.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>{{ site.url }}/sitemap-quests-en.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>{{ site.url }}/sitemap-cheatsheets.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>{{ site.url }}/sitemap-codex.xml</loc>
+  </sitemap>
+</sitemapindex>
