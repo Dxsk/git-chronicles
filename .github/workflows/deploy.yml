@@ -29,6 +29,15 @@ jobs:
       - run: npm ci
       - run: npm run build
 
+      - name: Spell check
+        run: npm run spell
+
+      - name: Check links
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: --no-progress --config .lychee.toml --root-dir _site '_site/**/*.html'
+          fail: true
+
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
