@@ -1,10 +1,14 @@
 name: Check Links
 
 on:
+  push:
+    branches: [main]
+    paths: ['**.njk', '**.md', 'src/**', '.lychee.toml', '.github/workflows/links.yml']
   pull_request:
     branches: [main]
   schedule:
     - cron: '0 8 * * 1'
+  workflow_dispatch:
 
 jobs:
   check:

@@ -1,6 +1,9 @@
 # Lychee link checker configuration
 # https://lychee.cli.rs/configuration/
 
+timeout = 30
+accept = [200, 204, 301, 302, 303, 307, 308, 429]
+
 # Exclude URLs that are expected to return non-200 status codes
 exclude = [
   # The 404 page references its own URL which naturally returns 404
