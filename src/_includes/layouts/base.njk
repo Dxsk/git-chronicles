@@ -24,20 +24,20 @@
   <link rel="author" href="/humans.txt">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
   <meta name="theme-color" content="#8b4513">
-  {% set meta_desc_fr = subtitle | default('Apprendre Git gratuitement avec un cours interactif et gamifie. 29 exercices pratiques dans un univers heroic fantasy. Tutoriel Git complet du debutant au CI/CD. Bilingue FR/EN, 100% gratuit et open source.') %}
-  {% set meta_desc_en = subtitle | default('Learn Git for free with an interactive, gamified course. 29 hands-on exercises in a fantasy RPG universe. Complete Git tutorial from beginner to CI/CD. Bilingual FR/EN, 100% free and open source.') %}
+  {% set meta_desc_fr = subtitle | default('Apprendre Git gratuitement avec un cours interactif et gamifié. 29 exercices pratiques dans un univers heroic fantasy. Tutoriel Git complet du débutant au CI/CD. Bilingue FR/EN, 100% gratuit et open source.') %}
+  {% set meta_desc_en = subtitle | default('Learn Git for free with an interactive, gamifiéd course. 29 hands-on exercises in a fantasy RPG universe. Complete Git tutorial from beginner to CI/CD. Bilingual FR/EN, 100% free and open source.') %}
   {% set meta_desc = meta_desc_fr if lang == "fr" else meta_desc_en %}
   {% set meta_title = title + " - " + ("Les Chroniques du Versionneur | Cours Git Gratuit" if lang == "fr" else "The Git Chronicles | Free Git Course") %}
   {% set site_name = "Les Chroniques du Versionneur" if lang == "fr" else "The Git Chronicles" %}
   <meta name="description" content="{{ meta_desc }}">
   {% if quest_id %}
-  <meta name="keywords" content="Git, {{ subtitle }}, {% if lang == 'fr' %}apprendre Git, tutoriel Git, cours Git gratuit, exercices Git, formation Git, Git pour debutant, gestion de version{% else %}learn Git, Git tutorial, free Git course, Git exercises, Git training, Git for beginners, version control{% endif %}">
+  <meta name="keywords" content="Git, {{ subtitle }}, {% if lang == 'fr' %}apprendre Git, tutoriel Git, cours Git gratuit, exercices Git, formation Git, Git pour débutant, gestion de version{% else %}learn Git, Git tutorial, free Git course, Git exercises, Git training, Git for beginners, version control{% endif %}">
   {% elif cheatsheet_slug_fr %}
-  <meta name="keywords" content="Git, {{ title }}, {% if lang == 'fr' %}aide-memoire Git, cheatsheet Git, commandes Git, reference rapide Git{% else %}Git cheatsheet, Git commands, Git quick reference, Git cheat sheet{% endif %}">
+  <meta name="keywords" content="Git, {{ title }}, {% if lang == 'fr' %}aide-mémoire Git, cheatsheet Git, commandes Git, référence rapide Git{% else %}Git cheatsheet, Git commands, Git quick reference, Git cheat sheet{% endif %}">
   {% elif codex_type %}
-  <meta name="keywords" content="Git, {{ title }}, {% if lang == 'fr' %}apprendre Git, univers, lore, gamifie{% else %}learn Git, universe, lore, gamified{% endif %}">
+  <meta name="keywords" content="Git, {{ title }}, {% if lang == 'fr' %}apprendre Git, univers, lore, gamifié{% else %}learn Git, universe, lore, gamifiéd{% endif %}">
   {% else %}
-  <meta name="keywords" content="Git, {% if lang == 'fr' %}apprendre Git, cours Git gratuit, tutoriel Git, exercices Git, formation Git debutant, gestion de version, GitHub, GitLab, CI/CD, heroic fantasy, gamifie, interactif{% else %}learn Git, free Git course, Git tutorial, Git exercises, Git training beginner, version control, GitHub, GitLab, CI/CD, heroic fantasy, gamified, interactive{% endif %}">
+  <meta name="keywords" content="Git, {% if lang == 'fr' %}apprendre Git, cours Git gratuit, tutoriel Git, exercices Git, formation Git débutant, gestion de version, GitHub, GitLab, CI/CD, heroic fantasy, gamifié, interactif{% else %}learn Git, free Git course, Git tutorial, Git exercises, Git training beginner, version control, GitHub, GitLab, CI/CD, heroic fantasy, gamifiéd, interactive{% endif %}">
   {% endif %}
   <link rel="canonical" href="{{ site.url }}{{ page.url }}">
   <!-- Open Graph -->
@@ -68,7 +68,7 @@
     "@context": "https://schema.org",
     "@type": "Course",
     "name": "{% if lang == 'fr' %}Les Chroniques du Versionneur{% else %}The Git Chronicles{% endif %}",
-    "description": "{% if lang == 'fr' %}Apprendre Git gratuitement avec un cours interactif et gamifie. 29 exercices pratiques dans un univers heroic fantasy, de git init au CI/CD. Tutoriel Git complet, bilingue FR/EN, 100% gratuit et open source.{% else %}Learn Git for free with an interactive, gamified course. 29 hands-on exercises in a fantasy RPG universe, from git init to CI/CD. Complete Git tutorial, bilingual FR/EN, 100% free and open source.{% endif %}",
+    "description": "{% if lang == 'fr' %}Apprendre Git gratuitement avec un cours interactif et gamifié. 29 exercices pratiques dans un univers heroic fantasy, de git init au CI/CD. Tutoriel Git complet, bilingue FR/EN, 100% gratuit et open source.{% else %}Learn Git for free with an interactive, gamifiéd course. 29 hands-on exercises in a fantasy RPG universe, from git init to CI/CD. Complete Git tutorial, bilingual FR/EN, 100% free and open source.{% endif %}",
     "url": "{{ site.url }}/{{ lang }}/",
     "provider": {
       "@type": "Person",
