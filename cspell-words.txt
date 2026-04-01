@@ -192,3 +192,5 @@ cœur
 œil
 gamifie
 Codecademy
+gamifié
+débutant
