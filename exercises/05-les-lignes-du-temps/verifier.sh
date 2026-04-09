@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
+
+# The check_step DSL (see lib/common.sh) receives test expressions as
+# single-quoted strings and evaluates them later. Single quotes are
+# deliberate in this file, not a bug.
+# shellcheck disable=SC2016
 # SPDX-License-Identifier: MIT
 # =============================================================================
 # Quête 05 - Les Lignes du Temps - Verification script
@@ -6,13 +11,8 @@
 # =============================================================================
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# shellcheck source=../../lib/common.sh
+# shellcheck source=SCRIPTDIR/../../lib/common.sh
 source "$SCRIPT_DIR/../../lib/common.sh"
-
-# The check_step DSL from lib/common.sh receives test expressions
-# as single-quoted strings and evaluates them later. Single quotes
-# are intentional here, not a bug.
-# shellcheck disable=SC2016
 _parse_lang_flag "$@"
 _load_theme_messages
 
