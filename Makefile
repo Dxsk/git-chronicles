@@ -67,7 +67,7 @@ package: ## Build release zip locally (same output as CI)
 # -----------------------------------------------------------------------------
 
 .PHONY: lint
-lint: lint-spell lint-i18n lint-links lint-a11y lint-shell lint-ci lint-powershell ## Run all linters
+lint: lint-spell lint-i18n lint-nav lint-links lint-a11y lint-shell lint-ci lint-powershell ## Run all linters
 
 .PHONY: lint-spell
 lint-spell: ## Run cspell on FR + EN content
@@ -76,6 +76,10 @@ lint-spell: ## Run cspell on FR + EN content
 .PHONY: lint-i18n
 lint-i18n: ## Check FR/EN page parity
 	npm run check:i18n
+
+.PHONY: lint-nav
+lint-nav: ## Verify nav.js slugs match real .njk files (catches dead runtime links)
+	npm run check:nav
 
 .PHONY: lint-links
 lint-links: build ## Check internal links (requires build)
