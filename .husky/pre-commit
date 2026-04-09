@@ -1,2 +1,28 @@
-export PATH="$HOME/.nvm/versions/node/$(ls $HOME/.nvm/versions/node/ | tail -1)/bin:$PATH"
+#!/usr/bin/env bash
+# Pre-commit: fast static checks. Anything that needs a build lives
+# in pre-push instead so `git commit` stays snappy.
+#
+# Runs:
+#   - cspell (spell check on content)
+#   - shellcheck (all tracked .sh)
+#   - actionlint (all .github/workflows)
+#   - PSScriptAnalyzer (best-effort: skipped if pwsh absent)
+#
+# Anything failing here blocks the commit. To bypass in an emergency:
+#   git commit --no-verify
+# ...but you owe the team a follow-up fix.
+
+set -e
+
+# nvm-installed node needs to be on PATH for npm scripts.
+if [ -d "$HOME/.nvm/versions/node" ]; then
+  LATEST_NODE=$(ls "$HOME/.nvm/versions/node/" | tail -1)
+  if [ -n "$LATEST_NODE" ]; then
+    export PATH="$HOME/.nvm/versions/node/$LATEST_NODE/bin:$PATH"
+  fi
+fi
+
 npm run spell
+make lint-shell
+make lint-ci
+make lint-powershell

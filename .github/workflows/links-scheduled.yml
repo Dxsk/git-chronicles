@@ -3,7 +3,7 @@ name: Check Links
 on:
   push:
     branches: [main]
-    paths: ['**.njk', '**.md', 'src/**', '.lychee.toml', '.github/workflows/links.yml']
+    paths: ['**.njk', '**.md', 'src/**', '.lychee.toml', '.github/workflows/links-scheduled.yml']
   pull_request:
     branches: [main]
   schedule:
