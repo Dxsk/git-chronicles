@@ -1,0 +1,127 @@
+name: Package Release
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: package-release
+  cancel-in-progress: true
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Stage files to package
+        run: |
+          set -euo pipefail
+          mkdir -p build/git-chronicles
+
+          # Exclusion patterns (extended regex, anchored on path root).
+          # Dev tooling, generated site, and project config that a learner
+          # downloading the exercises does not need.
+          EXCLUDES=(
+            '^\.github/'
+            '^\.husky/'
+            '^\.claude/'
+            '^src/'
+            '^themes/'
+            '^scripts/'
+            '^tests/'
+            '^_site/'
+            '^node_modules/'
+            '^pagefind/'
+            '^\.gitignore$'
+            '^\.lychee\.toml$'
+            '^\.eleventy\.js$'
+            '^cspell\.json$'
+            '^cspell-words\.txt$'
+            '^package\.json$'
+            '^package-lock\.json$'
+            '^Makefile$'
+          )
+          PATTERN=$(IFS='|'; echo "${EXCLUDES[*]}")
+
+          git ls-files | grep -Ev "$PATTERN" > /tmp/files.txt
+          echo "Packaging $(wc -l < /tmp/files.txt) files."
+
+          rsync -a --files-from=/tmp/files.txt ./ build/git-chronicles/
+
+      - name: Hash source tree (pre-zip)
+        id: source_hash
+        run: |
+          set -euo pipefail
+          cd build/git-chronicles
+          SRC_HASH=$(find . -type f -print0 \
+            | LC_ALL=C sort -z \
+            | xargs -0 sha256sum \
+            | sha256sum \
+            | awk '{print $1}')
+          echo "hash=$SRC_HASH" >> "$GITHUB_OUTPUT"
+          echo "Source tree SHA-256: $SRC_HASH"
+
+      - name: Create zip
+        run: |
+          set -euo pipefail
+          cd build
+          # -X strips extra file attrs for reproducibility
+          zip -rqX git-chronicles.zip git-chronicles
+          sha256sum git-chronicles.zip | awk '{print $1 "  git-chronicles.zip"}' \
+            > git-chronicles.zip.sha256
+          echo "Zip SHA-256: $(awk '{print $1}' git-chronicles.zip.sha256)"
+
+      - name: Verify zip integrity (round-trip rehash)
+        run: |
+          set -euo pipefail
+          cd build
+          mkdir verify
+          unzip -q git-chronicles.zip -d verify
+
+          cd verify/git-chronicles
+          VERIFY_HASH=$(find . -type f -print0 \
+            | LC_ALL=C sort -z \
+            | xargs -0 sha256sum \
+            | sha256sum \
+            | awk '{print $1}')
+
+          EXPECTED="${{ steps.source_hash.outputs.hash }}"
+          echo "Expected: $EXPECTED"
+          echo "Got:      $VERIFY_HASH"
+
+          if [ "$VERIFY_HASH" != "$EXPECTED" ]; then
+            echo "::error::Zip integrity check failed — source and round-trip hashes differ."
+            exit 1
+          fi
+          echo "Zip integrity OK."
+
+      - name: Publish rolling 'latest' release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          cd build
+
+          ZIP_HASH=$(awk '{print $1}' git-chronicles.zip.sha256)
+
+          # Remove previous rolling release + tag if they exist.
+          gh release delete latest --yes --cleanup-tag 2>/dev/null || true
+
+          gh release create latest \
+            --title "Latest build" \
+            --notes "Automated build from commit ${{ github.sha }}.
+
+          SHA-256: \`$ZIP_HASH\`
+
+          Verify locally:
+          \`\`\`
+          sha256sum -c git-chronicles.zip.sha256
+          \`\`\`" \
+            git-chronicles.zip git-chronicles.zip.sha256
