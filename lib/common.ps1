@@ -34,7 +34,7 @@ function _Parse-LangFlag {
 }
 
 function _Load-ThemeMessages {
-    $themeDir = Join-Path $PSScriptRoot "..\..\themes\$($script:Theme ?? 'fantasy')"
+    $themeDir = Join-Path $PSScriptRoot "..\themes\$($script:Theme ?? 'fantasy')"
     $msgFile  = Join-Path $themeDir "messages_$($script:LangCode).ps1"
     if (Test-Path $msgFile) {
         . $msgFile
@@ -55,7 +55,7 @@ $script:QuestTitle = ""
 # Optional theme loading
 # Relative path from git/lib/ -> git/themes/fantasy/messages_<lang>.ps1
 # -----------------------------------------------------------------------------
-$_ThemeFile = Join-Path $PSScriptRoot "..\..\themes\fantasy\messages_$($script:LangCode).ps1"
+$_ThemeFile = Join-Path $PSScriptRoot "..\themes\fantasy\messages_$($script:LangCode).ps1"
 
 # Default messages (overridden if the theme is loaded)
 $script:ThemeName         = "default"
@@ -131,16 +131,21 @@ function Check-Step {
     $success = $false
     try {
         $result = & $TestCommand 2>&1
-        # The test is considered successful if no exception is thrown
-        # and the block returns $true or a truthy value
-        if ($LASTEXITCODE -ne $null -and $LASTEXITCODE -ne 0) {
-            $success = $false
-        } elseif ($result -is [bool]) {
+        # If the block returned an explicit boolean, trust it — some steps
+        # deliberately treat a non-zero LASTEXITCODE as success (e.g. "HEAD
+        # must not resolve", "file must not match pattern"). Falling back to
+        # LASTEXITCODE here would invert their intent.
+        if ($result -is [bool]) {
             $success = $result
+        } elseif ($LASTEXITCODE -ne $null -and $LASTEXITCODE -ne 0) {
+            $success = $false
         } elseif ($result -ne $null -and $result -ne $false -and $result -ne 0) {
             $success = $true
         } else {
-            $success = $true
+            # Null, $false, 0, or an empty collection — treat as failure.
+            # (The previous copy-paste bug here silently marked these as
+            # success, masking broken step logic in several verifiers.)
+            $success = $false
         }
     }
     catch {

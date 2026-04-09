@@ -25,7 +25,8 @@ Check-Step 2 "Le dossier .github/workflows existe" {
 
 # ---- Step 3 : Un workflow YAML contient une stratégie de matrice ----
 Check-Step 3 "Un workflow contient une stratégie de matrice (matrix)" {
-    $fichiers = Get-ChildItem -Path ".github/workflows" -Include "*.yml","*.yaml" -ErrorAction SilentlyContinue
+    $fichiers = @(Get-ChildItem ".github/workflows" -Filter "*.yml" -ErrorAction SilentlyContinue) + `
+                @(Get-ChildItem ".github/workflows" -Filter "*.yaml" -ErrorAction SilentlyContinue)
     if (-not $fichiers -or ($fichiers | Measure-Object).Count -eq 0) { return $false }
     foreach ($f in $fichiers) {
         $content = Get-Content $f.FullName -Raw
@@ -36,7 +37,8 @@ Check-Step 3 "Un workflow contient une stratégie de matrice (matrix)" {
 
 # ---- Step 4 : Le workflow contient plusieurs étapes (steps) ----
 Check-Step 4 "Le workflow contient plusieurs étapes (steps)" {
-    $fichiers = Get-ChildItem -Path ".github/workflows" -Include "*.yml","*.yaml" -ErrorAction SilentlyContinue
+    $fichiers = @(Get-ChildItem ".github/workflows" -Filter "*.yml" -ErrorAction SilentlyContinue) + `
+                @(Get-ChildItem ".github/workflows" -Filter "*.yaml" -ErrorAction SilentlyContinue)
     if (-not $fichiers -or ($fichiers | Measure-Object).Count -eq 0) { return $false }
     $fichier = $fichiers | Select-Object -First 1
     $content = Get-Content $fichier.FullName -Raw
@@ -50,7 +52,8 @@ Check-Step 5 "Au moins un script de test existe" {
     $testFiles += Get-ChildItem -Path "." -Filter "test-*.sh" -ErrorAction SilentlyContinue
     $testFiles += Get-ChildItem -Path "." -Filter "test-*.bash" -ErrorAction SilentlyContinue
     if (Test-Path "tests" -PathType Container) {
-        $testFiles += Get-ChildItem -Path "tests" -Include "*.sh","*.bash" -ErrorAction SilentlyContinue
+        $testFiles += @(Get-ChildItem "tests" -Filter "*.sh"   -ErrorAction SilentlyContinue) + `
+                      @(Get-ChildItem "tests" -Filter "*.bash" -ErrorAction SilentlyContinue)
     }
     ($testFiles | Measure-Object).Count -ge 1
 }

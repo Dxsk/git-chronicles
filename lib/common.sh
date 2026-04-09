@@ -34,7 +34,7 @@ _parse_lang_flag() {
 
 _load_theme_messages() {
   local script_dir="${SCRIPT_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
-  local theme_dir="${script_dir}/../themes/${THEME:-fantasy}"
+  local theme_dir="${script_dir}/../../themes/${THEME:-fantasy}"
   local msg_file="${theme_dir}/messages_${LANG_CODE}.sh"
   if [[ -f "$msg_file" ]]; then
     source "$msg_file"

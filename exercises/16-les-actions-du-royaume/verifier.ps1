@@ -36,7 +36,8 @@ Check-Step 3 "Au moins un fichier .yml existe dans .github/workflows" {
 # ---- Step 4 : Le fichier YAML contient le mot-clé "name:" ----
 Check-Step 4 "Le workflow contient le mot-clé 'name:'" {
     if (-not (Test-Path ".github/workflows")) { return $false }
-    $files = Get-ChildItem ".github/workflows" -Include "*.yml","*.yaml" -ErrorAction SilentlyContinue
+    $files = @(Get-ChildItem ".github/workflows" -Filter "*.yml" -ErrorAction SilentlyContinue) + `
+             @(Get-ChildItem ".github/workflows" -Filter "*.yaml" -ErrorAction SilentlyContinue)
     if (-not $files) { return $false }
     foreach ($f in $files) {
         $content = Get-Content $f.FullName -Raw
@@ -48,7 +49,8 @@ Check-Step 4 "Le workflow contient le mot-clé 'name:'" {
 # ---- Step 5 : Le fichier YAML contient le mot-clé "on:" ----
 Check-Step 5 "Le workflow contient le mot-clé 'on:'" {
     if (-not (Test-Path ".github/workflows")) { return $false }
-    $files = Get-ChildItem ".github/workflows" -Include "*.yml","*.yaml" -ErrorAction SilentlyContinue
+    $files = @(Get-ChildItem ".github/workflows" -Filter "*.yml" -ErrorAction SilentlyContinue) + `
+             @(Get-ChildItem ".github/workflows" -Filter "*.yaml" -ErrorAction SilentlyContinue)
     if (-not $files) { return $false }
     foreach ($f in $files) {
         $content = Get-Content $f.FullName -Raw
@@ -60,7 +62,8 @@ Check-Step 5 "Le workflow contient le mot-clé 'on:'" {
 # ---- Step 6 : Le fichier YAML contient le mot-clé "jobs:" ----
 Check-Step 6 "Le workflow contient le mot-clé 'jobs:'" {
     if (-not (Test-Path ".github/workflows")) { return $false }
-    $files = Get-ChildItem ".github/workflows" -Include "*.yml","*.yaml" -ErrorAction SilentlyContinue
+    $files = @(Get-ChildItem ".github/workflows" -Filter "*.yml" -ErrorAction SilentlyContinue) + `
+             @(Get-ChildItem ".github/workflows" -Filter "*.yaml" -ErrorAction SilentlyContinue)
     if (-not $files) { return $false }
     foreach ($f in $files) {
         $content = Get-Content $f.FullName -Raw
