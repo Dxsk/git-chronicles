@@ -1,0 +1,26 @@
+version: 2
+updates:
+  # Keep GitHub Actions pinned by SHA up to date. Dependabot will open a
+  # PR when a new release of any action is available, bumping the SHA
+  # and the trailing version comment in one go.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: chore
+      include: scope
+    labels:
+      - dependencies
+      - ci
+
+  # npm dev dependencies for the Eleventy site.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: chore
+      include: scope
+    labels:
+      - dependencies
