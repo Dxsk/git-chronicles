@@ -18,87 +18,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Stage files to package
-        run: |
-          set -euo pipefail
-          mkdir -p build/git-chronicles
-
-          # Exclusion patterns (extended regex, anchored on path root).
-          # Dev tooling, generated site, and project config that a learner
-          # downloading the exercises does not need.
-          EXCLUDES=(
-            '^\.github/'
-            '^\.husky/'
-            '^\.claude/'
-            '^src/'
-            '^themes/'
-            '^scripts/'
-            '^tests/'
-            '^_site/'
-            '^node_modules/'
-            '^pagefind/'
-            '^\.gitignore$'
-            '^\.lychee\.toml$'
-            '^\.eleventy\.js$'
-            '^cspell\.json$'
-            '^cspell-words\.txt$'
-            '^package\.json$'
-            '^package-lock\.json$'
-            '^Makefile$'
-          )
-          PATTERN=$(IFS='|'; echo "${EXCLUDES[*]}")
-
-          git ls-files | grep -Ev "$PATTERN" > /tmp/files.txt
-          echo "Packaging $(wc -l < /tmp/files.txt) files."
-
-          rsync -a --files-from=/tmp/files.txt ./ build/git-chronicles/
-
-      - name: Hash source tree (pre-zip)
-        id: source_hash
-        run: |
-          set -euo pipefail
-          cd build/git-chronicles
-          SRC_HASH=$(find . -type f -print0 \
-            | LC_ALL=C sort -z \
-            | xargs -0 sha256sum \
-            | sha256sum \
-            | awk '{print $1}')
-          echo "hash=$SRC_HASH" >> "$GITHUB_OUTPUT"
-          echo "Source tree SHA-256: $SRC_HASH"
-
-      - name: Create zip
-        run: |
-          set -euo pipefail
-          cd build
-          # -X strips extra file attrs for reproducibility
-          zip -rqX git-chronicles.zip git-chronicles
-          sha256sum git-chronicles.zip | awk '{print $1 "  git-chronicles.zip"}' \
-            > git-chronicles.zip.sha256
-          echo "Zip SHA-256: $(awk '{print $1}' git-chronicles.zip.sha256)"
-
-      - name: Verify zip integrity (round-trip rehash)
-        run: |
-          set -euo pipefail
-          cd build
-          mkdir verify
-          unzip -q git-chronicles.zip -d verify
-
-          cd verify/git-chronicles
-          VERIFY_HASH=$(find . -type f -print0 \
-            | LC_ALL=C sort -z \
-            | xargs -0 sha256sum \
-            | sha256sum \
-            | awk '{print $1}')
-
-          EXPECTED="${{ steps.source_hash.outputs.hash }}"
-          echo "Expected: $EXPECTED"
-          echo "Got:      $VERIFY_HASH"
-
-          if [ "$VERIFY_HASH" != "$EXPECTED" ]; then
-            echo "::error::Zip integrity check failed: source and round-trip hashes differ."
-            exit 1
-          fi
-          echo "Zip integrity OK."
+      - name: Build release zip
+        run: ./scripts/package-release.sh
 
       - name: Publish rolling 'latest' release
         env:
@@ -118,8 +39,9 @@ jobs:
           sha256sum -c git-chronicles.zip.sha256
           \`\`\`"
 
-          # Edit-or-create: keep the 'latest' tag, move it to the new commit,
-          # replace the two assets. Avoids the delete+recreate race window.
+          # Edit-or-create: keep the 'latest' tag stable, move it to the
+          # new commit, replace the two assets. Avoids delete+recreate
+          # race windows and surfaces real errors.
           if gh release view latest >/dev/null 2>&1; then
             gh release upload latest \
               git-chronicles.zip git-chronicles.zip.sha256 --clobber

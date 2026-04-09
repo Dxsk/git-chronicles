@@ -1,0 +1,21 @@
+# Files and directories excluded from `git archive` (release zip).
+# Single source of truth for what ships to learners in git-chronicles.zip.
+# Keep in sync by adding new dev-only paths here.
+
+.github/            export-ignore
+.husky/             export-ignore
+.claude/            export-ignore
+src/                export-ignore
+themes/             export-ignore
+scripts/            export-ignore
+tests/              export-ignore
+
+.gitignore          export-ignore
+.gitattributes      export-ignore
+.lychee.toml        export-ignore
+.eleventy.js        export-ignore
+cspell.json         export-ignore
+cspell-words.txt    export-ignore
+package.json        export-ignore
+package-lock.json   export-ignore
+Makefile            export-ignore
