@@ -48,7 +48,7 @@
       { id: "A3", name: { fr: "La Cité-Monde", en: "The World City" }, slug: { fr: "A3-la-cite-monde", en: "A3-the-world-city" }, available: true },
       { id: "A3a", name: { fr: "La Cité-Monde, le Choix du Bâtisseur", en: "The World City, The Builder's Choice" }, slug: { fr: "A3a-la-cite-monde", en: "A3a-the-world-city" }, available: true },
       { id: "A3b", name: { fr: "Les Arcanes de la Cité", en: "The City Arcana" }, slug: { fr: "A3b-les-arcanes-de-la-cite", en: "A3b-the-city-arcana" }, available: true },
-      { id: "A4", name: { fr: "Le Forgeron d'Acier", en: "The Steel Smith" }, slug: { fr: "A4-le-forgeron-dacier", en: "A4-the-steel-smith" }, available: true },
+      { id: "A4", name: { fr: "Les Plans de l'Artificier", en: "The Artificer's Plans" }, slug: { fr: "A4-les-plans-de-lartificier", en: "A4-the-artificers-plans" }, available: true },
       { id: "A5", name: { fr: "Les Courants du Destin", en: "The Currents of Destiny" }, slug: { fr: "A5-les-courants-du-destin", en: "A5-the-currents-of-destiny" }, available: true },
       { id: "A6", name: { fr: "L'Atelier des Enlumineurs", en: "The Illuminators' Workshop" }, slug: { fr: "A6-latelier-des-enlumineurs", en: "A6-the-illuminators-workshop" }, available: true }
     ]}
