@@ -10,15 +10,13 @@ permissions:
 
 concurrency:
   group: package-release
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   package:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Stage files to package
         run: |
@@ -97,7 +95,7 @@ jobs:
           echo "Got:      $VERIFY_HASH"
 
           if [ "$VERIFY_HASH" != "$EXPECTED" ]; then
-            echo "::error::Zip integrity check failed — source and round-trip hashes differ."
+            echo "::error::Zip integrity check failed: source and round-trip hashes differ."
             exit 1
           fi
           echo "Zip integrity OK."
@@ -111,17 +109,28 @@ jobs:
 
           ZIP_HASH=$(awk '{print $1}' git-chronicles.zip.sha256)
 
-          # Remove previous rolling release + tag if they exist.
-          gh release delete latest --yes --cleanup-tag 2>/dev/null || true
-
-          gh release create latest \
-            --title "Latest build" \
-            --notes "Automated build from commit ${{ github.sha }}.
+          NOTES="Automated build from commit ${{ github.sha }}.
 
           SHA-256: \`$ZIP_HASH\`
 
           Verify locally:
           \`\`\`
           sha256sum -c git-chronicles.zip.sha256
-          \`\`\`" \
-            git-chronicles.zip git-chronicles.zip.sha256
+          \`\`\`"
+
+          # Edit-or-create: keep the 'latest' tag, move it to the new commit,
+          # replace the two assets. Avoids the delete+recreate race window.
+          if gh release view latest >/dev/null 2>&1; then
+            gh release upload latest \
+              git-chronicles.zip git-chronicles.zip.sha256 --clobber
+            gh release edit latest \
+              --target "${{ github.sha }}" \
+              --title "Latest build" \
+              --notes "$NOTES"
+          else
+            gh release create latest \
+              --target "${{ github.sha }}" \
+              --title "Latest build" \
+              --notes "$NOTES" \
+              git-chronicles.zip git-chronicles.zip.sha256
+          fi
