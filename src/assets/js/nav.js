@@ -38,9 +38,9 @@
     ]},
     { arc: 5, title: { fr: "Arc 5 - Au-delà des Guildes", en: "Arc 5 - Beyond the Guilds" }, quests: [
       { id: "20", name: { fr: "Les Chemins Libres", en: "The Free Paths" }, slug: { fr: "20-les-chemins-libres", en: "20-the-free-paths" }, available: true },
-      { id: "21", name: { fr: "Le Disciple de Radicle", en: "The Radicle Disciple" }, slug: { fr: "21-le-disciple-de-radicle", en: "21-the-radicle-disciple" }, available: true },
+      { id: "21", name: { fr: "Le Client du Voyageur", en: "The Traveler's Client" }, slug: { fr: "21-le-client-du-voyageur", en: "21-the-travelers-client" }, available: true },
       { id: "22", name: { fr: "La Tour de Guet", en: "The Watchtower" }, slug: { fr: "22-la-tour-de-guet", en: "22-the-watchtower" }, available: true },
-      { id: "23", name: { fr: "Le Grand Rituel", en: "The Grand Ritual" }, slug: { fr: "23-le-grand-rituel", en: "23-the-grand-ritual" }, available: true }
+      { id: "23", name: { fr: "Le Réseau des Pairs", en: "The Peer Network" }, slug: { fr: "23-le-reseau-des-pairs", en: "23-the-peer-network" }, available: true }
     ]},
     { arc: 6, title: { fr: "Arc 6 - Les Sentiers Oubliés", en: "Arc 6 - The Forgotten Paths" }, quests: [
       { id: "A1", name: { fr: "Les Forges du Titan", en: "The Titan's Forges" }, slug: { fr: "A1-les-forges-du-titan", en: "A1-the-titans-forges" }, available: true },
@@ -72,7 +72,7 @@
     { id: "cx-ts", name: { fr: "Les Trois Salles", en: "The Three Halls" }, slug: { fr: "les-trois-salles", en: "the-three-halls" } },
     { id: "cx-fs", name: { fr: "Foret de Sombrebois", en: "Darkwood Forest" }, slug: { fr: "foret-de-sombrebois", en: "darkwood-forest" } },
     { id: "cx-at", name: { fr: "Atelier du Tisseur", en: "Time Weaver's Workshop" }, slug: { fr: "atelier-du-tisseur-de-temps", en: "time-weavers-workshop" } },
-    { id: "cx-ss", name: { fr: "Salle des Sceaux", en: "Hall of Seals" }, slug: { fr: "salle-des-sceaux", en: "hall-of-seals" } },
+    { id: "cx-ss", name: { fr: "Salle des Sceaux", en: "Seal Chamber" }, slug: { fr: "salle-des-sceaux", en: "seal-chamber" } },
     { id: "cx-vf", name: { fr: "Vallee des Forges", en: "Valley of Forges" }, slug: { fr: "vallee-des-forges-eternelles", en: "valley-of-eternal-forges" } },
     { id: "cx-pd", name: { fr: "Portails Distants", en: "Distant Portals" }, slug: { fr: "les-portails-distants", en: "the-distant-portals" } }
   ];
