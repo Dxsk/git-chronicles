@@ -137,9 +137,9 @@ function Check-Step {
         # LASTEXITCODE here would invert their intent.
         if ($result -is [bool]) {
             $success = $result
-        } elseif ($LASTEXITCODE -ne $null -and $LASTEXITCODE -ne 0) {
+        } elseif ($null -ne $LASTEXITCODE -and $LASTEXITCODE -ne 0) {
             $success = $false
-        } elseif ($result -ne $null -and $result -ne $false -and $result -ne 0) {
+        } elseif ($null -ne $result -and $result -ne $false -and $result -ne 0) {
             $success = $true
         } else {
             # Null, $false, 0, or an empty collection — treat as failure.

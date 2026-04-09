@@ -1,5 +1,11 @@
-# SPDX-License-Identifier: MIT
 #!/usr/bin/env bash
+# SPDX-License-Identifier: MIT
+#
+# shellcheck disable=SC2034
+# This is a library sourced by every quest verifier — many of the theme /
+# message / color variables declared below are referenced by the sourcer, not
+# by common.sh itself, so SC2034 (unused variable) is noise here.
+#
 # =============================================================================
 # common.sh - Shared functions for verification scripts
 # Project : Git Chronicles (Les Chroniques du Versionneur)
@@ -37,8 +43,10 @@ _load_theme_messages() {
   local theme_dir="${script_dir}/../../themes/${THEME:-fantasy}"
   local msg_file="${theme_dir}/messages_${LANG_CODE}.sh"
   if [[ -f "$msg_file" ]]; then
+    # shellcheck source=/dev/null
     source "$msg_file"
   else
+    # shellcheck source=/dev/null
     source "${theme_dir}/messages_en.sh"
   fi
 }

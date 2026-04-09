@@ -67,7 +67,7 @@ package: ## Build release zip locally (same output as CI)
 # -----------------------------------------------------------------------------
 
 .PHONY: lint
-lint: lint-spell lint-i18n lint-links lint-a11y ## Run all linters
+lint: lint-spell lint-i18n lint-links lint-a11y lint-shell lint-ci lint-powershell ## Run all linters
 
 .PHONY: lint-spell
 lint-spell: ## Run cspell on FR + EN content
@@ -84,6 +84,22 @@ lint-links: build ## Check internal links (requires build)
 .PHONY: lint-a11y
 lint-a11y: build ## Check accessibility (requires build)
 	npm run check:a11y
+
+.PHONY: lint-shell
+lint-shell: ## Run shellcheck on bash scripts and verifiers
+	@scripts/makefile/run-shellcheck.sh
+
+.PHONY: lint-ci
+lint-ci: ## Run actionlint on .github/workflows (skipped if absent)
+	@scripts/makefile/run-actionlint.sh
+
+.PHONY: lint-powershell
+lint-powershell: ## Run PSScriptAnalyzer on .ps1 files (skipped if pwsh absent)
+ifeq ($(PWSH),)
+	@echo "⚠ pwsh not found, skipping PSScriptAnalyzer."
+else
+	@scripts/makefile/run-psscriptanalyzer.sh $(PWSH)
+endif
 
 # -----------------------------------------------------------------------------
 # Verifier regression tests

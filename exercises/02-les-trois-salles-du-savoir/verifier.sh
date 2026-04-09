@@ -1,5 +1,5 @@
-# SPDX-License-Identifier: MIT
 #!/usr/bin/env bash
+# SPDX-License-Identifier: MIT
 # =============================================================================
 # verifier.sh - Quête 02 : Les Trois Salles du Savoir
 # Project : Git Chronicles (Les Chroniques du Versionneur)

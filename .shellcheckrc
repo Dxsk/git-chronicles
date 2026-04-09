@@ -1,0 +1,11 @@
+# ShellCheck configuration for Git Chronicles.
+# https://www.shellcheck.net/wiki/
+
+# Warnings and errors are blocking. Info-level notes stay advisory.
+severity=warning
+
+# Let shellcheck follow explicit `# shellcheck source=path` hints so
+# it can analyse helpers shared across files (primarily lib/common.sh
+# sourced by every verifier.sh). No global SC1091 disable; each
+# source site must declare its hint explicitly.
+external-sources=true

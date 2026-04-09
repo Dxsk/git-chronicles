@@ -1,12 +1,18 @@
-# SPDX-License-Identifier: MIT
 #!/usr/bin/env bash
+# SPDX-License-Identifier: MIT
 # =============================================================================
 # Quête 12 - L'Oracle du Code - Verification script
 # Project : Git Chronicles (Les Chroniques du Versionneur)
 # =============================================================================
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=../../lib/common.sh
 source "$SCRIPT_DIR/../../lib/common.sh"
+
+# The check_step DSL from lib/common.sh receives test expressions
+# as single-quoted strings and evaluates them later. Single quotes
+# are intentional here, not a bug.
+# shellcheck disable=SC2016
 _parse_lang_flag "$@"
 _load_theme_messages
 

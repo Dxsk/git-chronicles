@@ -25,8 +25,8 @@ Check-Step 2 "git bisect a été utilisé (trace dans le reflog)" {
     $reflog = & git reflog 2>&1
     if ($LASTEXITCODE -ne 0) { return $false }
     $reflogText = $reflog | Out-String
-    $matches = [regex]::Matches($reflogText, "checkout: moving from [0-9a-f]{7,} to [0-9a-f]{7,}")
-    $matches.Count -ge 2
+    $checkoutMatches = [regex]::Matches($reflogText, "checkout: moving from [0-9a-f]{7,} to [0-9a-f]{7,}")
+    $checkoutMatches.Count -ge 2
 }
 
 # ---- Step 3 : git cherry-pick a été utilisé (trace dans le reflog) ----

@@ -1,5 +1,5 @@
-# SPDX-License-Identifier: MIT
 #!/usr/bin/env bash
+# SPDX-License-Identifier: MIT
 # =============================================================================
 # messages_en.sh - Themed messages: Heroic Fantasy (English)
 # Project : Git Chronicles (Les Chroniques du Versionneur)
@@ -12,6 +12,9 @@
 # Compatibility : bash 3.2+ (macOS), bash 4+ (Linux)
 # Encoding      : UTF-8
 # =============================================================================
+
+# These variables are consumed by lib/common.sh after this file is sourced.
+# shellcheck disable=SC2034
 
 # Active theme name (useful for debugging)
 THEME_NAME="fantasy"

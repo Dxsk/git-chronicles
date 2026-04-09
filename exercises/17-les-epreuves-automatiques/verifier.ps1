@@ -42,8 +42,8 @@ Check-Step 4 "Le workflow contient plusieurs étapes (steps)" {
     if (-not $fichiers -or ($fichiers | Measure-Object).Count -eq 0) { return $false }
     $fichier = $fichiers | Select-Object -First 1
     $content = Get-Content $fichier.FullName -Raw
-    $matches = [regex]::Matches($content, "- name:")
-    $matches.Count -ge 2
+    $stepNames = [regex]::Matches($content, "- name:")
+    $stepNames.Count -ge 2
 }
 
 # ---- Step 5 : Au moins un script de test existe ----
