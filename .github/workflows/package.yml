@@ -21,15 +21,7 @@ jobs:
 
       - name: Resolve version label
         id: version
-        run: |
-          set -euo pipefail
-          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
-            echo "label=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"
-            echo "tagged=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "label=latest" >> "$GITHUB_OUTPUT"
-            echo "tagged=false" >> "$GITHUB_OUTPUT"
-          fi
+        run: ./scripts/ci/resolve-version.sh
 
       - name: Build release zip
         env:
@@ -41,42 +33,5 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           VERSION: ${{ steps.version.outputs.label }}
           TAGGED: ${{ steps.version.outputs.tagged }}
-        run: |
-          set -euo pipefail
-          cd build
-
-          ZIP_HASH=$(awk '{print $1}' git-chronicles.zip.sha256)
-
-          NOTES="Automated build from commit ${{ github.sha }}.
-
-          SHA-256: \`$ZIP_HASH\`
-
-          Verify locally:
-          \`\`\`
-          sha256sum -c git-chronicles.zip.sha256
-          \`\`\`"
-
-          if [ "$TAGGED" = "true" ]; then
-            # Immutable versioned release. Never overwrite an existing tag.
-            gh release create "$VERSION" \
-              --title "$VERSION" \
-              --notes "$NOTES" \
-              git-chronicles.zip git-chronicles.zip.sha256
-          else
-            # Rolling 'latest' release. Edit-or-create keeps the tag
-            # stable, moves it to the new commit, replaces assets.
-            if gh release view latest >/dev/null 2>&1; then
-              gh release upload latest \
-                git-chronicles.zip git-chronicles.zip.sha256 --clobber
-              gh release edit latest \
-                --target "${{ github.sha }}" \
-                --title "Latest build" \
-                --notes "$NOTES"
-            else
-              gh release create latest \
-                --target "${{ github.sha }}" \
-                --title "Latest build" \
-                --notes "$NOTES" \
-                git-chronicles.zip git-chronicles.zip.sha256
-            fi
-          fi
+          COMMIT_SHA: ${{ github.sha }}
+        run: ./scripts/ci/publish-release.sh
