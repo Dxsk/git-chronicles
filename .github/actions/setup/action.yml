@@ -1,0 +1,33 @@
+# SPDX-License-Identifier: MIT
+#
+# Composite action shared by every workflow that needs a Node-based
+# build of the site. Centralising the setup-node + npm ci pair here
+# means the pinned SHA only exists in one file, so dependabot bumps
+# and security audits have a single place to review.
+#
+# Usage (in a workflow):
+#   steps:
+#     - uses: actions/checkout@<sha>  # required first, local paths
+#                                     # need the repo on disk
+#     - uses: ./.github/actions/setup
+#
+# Why checkout is NOT inside this composite:
+# GitHub Actions resolves `./.github/actions/setup` against the
+# runner's workspace, which means the repository must already be
+# checked out before this action can be found on disk. So checkout
+# stays in the caller, and this action handles everything else.
+
+name: Setup Node env
+description: Install Node.js and run npm ci with cache.
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4 (v4.4.0)
+      with:
+        node-version: 22
+        cache: npm
+
+    - name: Install npm dependencies
+      shell: bash
+      run: npm ci
