@@ -41,7 +41,7 @@ function getSlugMap(dir) {
   for (const file of fs.readdirSync(dir)) {
     if (!file.endsWith(".njk") || file === "index.njk") continue;
     const fm = getFrontmatter(path.join(dir, file));
-    const questNum = file.match(/^(\d+|A\d+)-/);
+    const questNum = file.match(/^(\d+|A\d+[a-z]?)-/);
     if (questNum) {
       map.set(questNum[1], { file, keys: Object.keys(fm) });
     }
