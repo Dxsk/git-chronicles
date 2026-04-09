@@ -1,5 +1,5 @@
 # =============================================================================
-# Git Chronicles — developer Makefile
+# Git Chronicles, developer Makefile
 #
 # Entry points for local development and CI:
 #   make help           list all targets
@@ -10,13 +10,17 @@
 #   make test           run all verifier regression tests (bats + pester)
 #   make check          lint + build + test (the full pre-commit gate)
 #   make clean          remove _site/ and pagefind output
+#   make package        build the release zip locally (see docs/RELEASING.md)
 #
 # Tooling expected:
 #   - node + npm         (project site)
 #   - bats               (bash verifier tests)
-#   - pwsh + Pester      (PowerShell verifier tests — optional, skipped if
+#   - pwsh + Pester      (PowerShell verifier tests, optional, skipped if
 #                         pwsh is not installed; install on Arch via
 #                         `yay -S powershell-bin`)
+#
+# Non-trivial shell logic lives under scripts/makefile/ so this file
+# stays readable. Add new helpers there rather than growing recipes.
 # =============================================================================
 
 SHELL := /usr/bin/env bash
@@ -24,19 +28,9 @@ SHELL := /usr/bin/env bash
 # Discover optional tooling at parse time.
 BATS := $(shell command -v bats 2>/dev/null)
 
-# PowerShell detection: try host first, then fall back to a distrobox container
-# named "multidev" if it exposes pwsh (common dev setup on Arch / immutable
-# distros where pwsh lives in a toolbox).
-PWSH_HOST := $(shell command -v pwsh 2>/dev/null)
-PWSH_DBOX := $(shell command -v distrobox >/dev/null 2>&1 && \
-	distrobox enter multidev -- bash -c 'command -v pwsh' 2>/dev/null)
-ifneq ($(PWSH_HOST),)
-  PWSH := $(PWSH_HOST)
-else ifneq ($(PWSH_DBOX),)
-  PWSH := distrobox enter multidev -- pwsh
-else
-  PWSH :=
-endif
+# PowerShell detection delegated to a helper script (host first,
+# distrobox 'multidev' fallback). Empty string means not available.
+PWSH := $(shell scripts/makefile/detect-pwsh.sh)
 
 TESTS_DIR := tests/verifiers
 
@@ -62,10 +56,14 @@ build: ## Production build (eleventy + minify + pagefind)
 
 .PHONY: clean
 clean: ## Remove generated site artifacts
-	rm -rf _site pagefind
+	rm -rf _site pagefind build
+
+.PHONY: package
+package: ## Build release zip locally (same output as CI)
+	./scripts/package-release.sh
 
 # -----------------------------------------------------------------------------
-# Linters — wrap the npm scripts so contributors don't need to know them.
+# Linters: wrap the npm scripts so contributors don't need to know them.
 # -----------------------------------------------------------------------------
 
 .PHONY: lint
@@ -92,12 +90,12 @@ lint-a11y: build ## Check accessibility (requires build)
 # -----------------------------------------------------------------------------
 
 .PHONY: test
-test: test-bats test-pester ## Run all verifier regression tests
+test: test-bats test-pester test-packaging ## Run all regression tests
 
 .PHONY: test-bats
 test-bats: ## Run bats tests for verifier.sh scripts
 ifeq ($(BATS),)
-	@echo "✗ bats is not installed — install it to run shell verifier tests." >&2
+	@echo "✗ bats is not installed, install it to run shell verifier tests." >&2
 	@exit 1
 else
 	@echo "▶ Running bats tests…"
@@ -107,25 +105,23 @@ endif
 .PHONY: test-pester
 test-pester: ## Run Pester tests for verifier.ps1 scripts (skipped if pwsh absent)
 ifeq ($(PWSH),)
-	@echo "⚠ pwsh not found — skipping Pester tests."
+	@echo "⚠ pwsh not found, skipping Pester tests."
 	@echo "  Install on host, or provide a distrobox container named 'multidev' with pwsh."
 else
-	@echo "▶ Running Pester tests via: $(PWSH)"
-	@$(PWSH) -NoProfile -Command " \
-		if (-not (Get-Module -ListAvailable -Name Pester | Where-Object { \$$_.Version -ge '5.0.0' })) { \
-			Write-Host '  Installing Pester (first run only)...'; \
-			Install-Module -Name Pester -Force -Scope CurrentUser -SkipPublisherCheck; \
-		} \
-		Import-Module Pester; \
-		\$$cfg = New-PesterConfiguration; \
-		\$$cfg.Run.Path = '$(TESTS_DIR)'; \
-		\$$cfg.Run.Exit = \$$true; \
-		\$$cfg.Output.Verbosity = 'Detailed'; \
-		Invoke-Pester -Configuration \$$cfg"
+	@scripts/makefile/run-pester.sh $(TESTS_DIR) $(PWSH)
+endif
+
+.PHONY: test-packaging
+test-packaging: ## Run bats tests for the release packaging script
+ifeq ($(BATS),)
+	@echo "✗ bats is not installed, skipping packaging tests." >&2
+else
+	@echo "▶ Running packaging tests…"
+	bats tests/packaging
 endif
 
 # -----------------------------------------------------------------------------
-# The big one — full pre-commit / CI gate.
+# The big one: full pre-commit / CI gate.
 # -----------------------------------------------------------------------------
 
 .PHONY: check
