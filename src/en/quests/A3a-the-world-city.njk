@@ -1,0 +1,215 @@
+---
+layout: layouts/quest.njk
+lang: en
+quest_id: quest_A3a
+quest_number: "A3a"
+arc: 6
+title: "The World City, The Builder's Choice"
+subtitle: "Monorepo vs polyrepo, the strategic decision"
+quest_slug_fr: "A3a-la-cite-monde"
+quest_slug_en: "A3a-the-world-city"
+permalink: /en/quests/A3a-the-world-city/
+---
+
+    <!-- Narrative introduction -->
+    <div class="narrative">
+      <p>At the end of a road crossing three kingdoms stands the World City, a metropolis so vast it has its own seasons. Thousands of craftspeople work in the same interconnected workshop: smiths, weavers, alchemists, scribes, all under the same titanic roof.</p>
+      <p>The City Architect greets you atop the central tower. From there, you can see the immensity of the workshop below.</p>
+      <p>« Before descending into the technical arcana of the City, you must understand <strong>why</strong> some kingdoms chose this model and others did not. It is a strategic decision, not just a technical one. Let me show you both paths, and the price of each. »</p>
+    </div>
+
+    <div class="fancy-separator"></div>
+
+    <!-- Section 1: Monorepo vs Polyrepo -->
+    <h2><span class="keyword">Monorepo</span> vs <span class="keyword">Polyrepo</span></h2>
+
+    <p>When a team or company manages multiple projects, two approaches stand opposed:</p>
+
+    <h3>Polyrepo - one repository per project</h3>
+
+    <p>This is the most common approach. Each project, service or library has <strong>its own Git repository</strong>.</p>
+
+    <pre data-lang="bash"><code># Polyrepo - each project is a separate repository
+github.com/my-team/frontend       # React application
+github.com/my-team/backend-api    # Node.js API
+github.com/my-team/auth-service   # Authentication service
+github.com/my-team/shared-utils   # Shared library
+github.com/my-team/mobile-app     # Mobile application
+github.com/my-team/infra          # Terraform configuration</code></pre>
+
+    <p><strong>Advantages:</strong></p>
+    <ul>
+      <li>Each project is <strong>independent</strong> - its own history, its own branches, its own CI</li>
+      <li><strong>Fine-grained permissions</strong>: you can grant access to one repository without granting access to the others</li>
+      <li><strong>Fast clones</strong>: each repository is lightweight</li>
+      <li><strong>Simplicity</strong>: no special tooling needed</li>
+      <li><strong>Autonomous teams</strong>: each team manages its repository as it sees fit</li>
+    </ul>
+
+    <p><strong>Disadvantages:</strong></p>
+    <ul>
+      <li><strong>Code sharing is difficult</strong>: the shared library must be published as a package, with its own version</li>
+      <li><strong>Cross-cutting refactoring is painful</strong>: changing an API impacts multiple repos = multiple PRs, multiple reviews, multiple deployments</li>
+      <li><strong>Inconsistencies</strong>: each repository can use different versions of tools, linters, frameworks</li>
+      <li><strong>Dependency hell</strong>: managing versions between interdependent repositories</li>
+    </ul>
+
+    <h3>Monorepo - everything in a single repository</h3>
+
+    <p>The monorepo approach puts <strong>all the code</strong> from the organization into a single giant Git repository.</p>
+
+    <pre data-lang="bash"><code># Monorepo - everything in a single repository
+github.com/my-team/platform/
+├── apps/
+│   ├── frontend/        # React application
+│   ├── backend-api/     # Node.js API
+│   ├── mobile-app/      # Mobile application
+│   └── auth-service/    # Authentication service
+├── packages/
+│   ├── shared-utils/    # Shared library
+│   ├── ui-components/   # Shared UI components
+│   └── config/          # Shared configuration (ESLint, TS, etc.)
+├── infra/               # Terraform configuration
+└── docs/                # Centralized documentation</code></pre>
+
+    <p><strong>Advantages:</strong></p>
+    <ul>
+      <li><strong>Trivial code sharing</strong>: importing a shared package = a simple import, no version publishing</li>
+      <li><strong>Atomic refactoring</strong>: change a shared API + all its consumers in a single commit</li>
+      <li><strong>Consistency</strong>: one version of tools, one configuration, one standard</li>
+      <li><strong>Visibility</strong>: everyone sees all the code (transparency)</li>
+      <li><strong>Simple integration tests</strong>: everything is there, no need to mock other services</li>
+    </ul>
+
+    <p><strong>Disadvantages:</strong></p>
+    <ul>
+      <li><strong>Size</strong>: the repository can become enormous (GB of history)</li>
+      <li><strong>Tooling required</strong>: Git alone isn't enough, you need specialized tools</li>
+      <li><strong>Complex CI/CD</strong>: building and testing everything on each commit would be too slow</li>
+      <li><strong>Permissions</strong>: everyone sees everything (can be a disadvantage in some contexts)</li>
+      <li><strong>Training</strong>: the team must learn new tools</li>
+    </ul>
+
+    <h3>Who uses what?</h3>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Company</th>
+          <th>Approach</th>
+          <th>Details</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Google</strong></td>
+          <td>Monorepo</td>
+          <td>A single repo for nearly all code (billions of lines). In-house tool: Piper/CitC</td>
+        </tr>
+        <tr>
+          <td><strong>Meta (Facebook)</strong></td>
+          <td>Monorepo</td>
+          <td>A massive Mercurial monorepo for the main codebase</td>
+        </tr>
+        <tr>
+          <td><strong>Microsoft</strong></td>
+          <td>Mix</td>
+          <td>Windows is in a giant monorepo (VFS for Git). Other projects in polyrepo</td>
+        </tr>
+        <tr>
+          <td><strong>Twitter/X</strong></td>
+          <td>Monorepo</td>
+          <td>A monorepo with Pants as build tool</td>
+        </tr>
+        <tr>
+          <td><strong>Netflix</strong></td>
+          <td>Polyrepo</td>
+          <td>Hundreds of microservices, each with its own repo</td>
+        </tr>
+        <tr>
+          <td><strong>Amazon</strong></td>
+          <td>Polyrepo</td>
+          <td>"Two-pizza teams" philosophy with independent services</td>
+        </tr>
+        <tr>
+          <td><strong>Vercel</strong></td>
+          <td>Monorepo</td>
+          <td>Uses Turborepo (which they created)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="key-message">
+      <p>There is no universal "right" answer. The choice depends on team size, company culture, and the level of interdependence between projects. <strong>A monorepo without proper tooling is worse than a polyrepo.</strong></p>
+    </div>
+
+    <div class="fancy-separator"></div>
+
+    <div class="narrative">
+      <p>The Architect pauses. « Now that you know both approaches, let us talk about the <strong>cost</strong>. A monorepo is not free. It demands tooling, discipline, and trade-offs that not everyone is willing to accept. »</p>
+    </div>
+
+    <div class="fancy-separator"></div>
+
+    <!-- Section 7: The cost of a monorepo -->
+    <h2>The <span class="keyword">cost</span> of a monorepo</h2>
+
+    <p>A monorepo isn't free. Before diving in, make sure you understand what it entails:</p>
+
+    <h3>Tooling</h3>
+
+    <p>You'll need to set up and maintain tools like Nx, Turborepo or Bazel. These tools have their own learning curves and their own bugs. Someone on the team will need to become the expert.</p>
+
+    <h3>Training</h3>
+
+    <p>All developers need to understand the new workflows. "Why doesn't my build run everything?" "How do I target a single project?" "Why is the cache giving me an old result?" Plan time for training.</p>
+
+    <h3>More complex CI</h3>
+
+    <p>CI needs to be smarter. Instead of a simple "npm test", you need to implement affected detection, distributed cache, and parallelization. CI pipelines are more complex to write and debug.</p>
+
+    <h3>Git under pressure</h3>
+
+    <p>Git wasn't designed for repositories of several GB. You'll need to use partial clone, sparse checkout, and potentially <span class="git-cmd">git maintenance</span> to keep performance acceptable.</p>
+
+    <pre data-lang="bash"><code># Enable automatic Git maintenance
+# (optimizes pack files, updates indexes, etc.)
+git maintenance start
+
+# This launches background tasks:
+# - gc: orphaned object cleanup
+# - commit-graph: speed up history traversal
+# - prefetch: pre-fetch objects from the remote
+# - loose-objects: consolidate loose objects
+# - incremental-repack: incremental pack file repacking</code></pre>
+
+    <h3>When to choose a monorepo?</h3>
+
+    <ul>
+      <li>Your projects share <strong>a lot of code</strong> between them</li>
+      <li>You regularly do <strong>cross-cutting refactorings</strong></li>
+      <li>You want to enforce <strong>uniform standards</strong> (linter, formatter, conventions)</li>
+      <li>You have the <strong>resources</strong> to invest in tooling</li>
+      <li>Your team is ready to <strong>learn new tools</strong></li>
+    </ul>
+
+    <h3>When to stay with polyrepo?</h3>
+
+    <ul>
+      <li>Your projects are <strong>very independent</strong> from each other</li>
+      <li>You have <strong>autonomous teams</strong> with different technologies</li>
+      <li><strong>Simplicity</strong> is your priority</li>
+      <li>You don't have the resources to invest in monorepo tooling</li>
+      <li><strong>Access permissions</strong> to code must be strictly separated</li>
+    </ul>
+
+    <div class="narrative">
+      <p>"You see the World City down there? It's magnificent. But it wasn't built in a day. It took architects, roads, supply systems, cohabitation rules. <strong>A monorepo without tooling is a city without roads</strong> - total chaos. If you choose this path, invest in the foundations."</p>
+    </div>
+
+    <div class="fancy-separator"></div>
+
+    <div class="narrative">
+      <p>« You now know the strategic choice and its price. If you decide the World City is the right path for your kingdom, you still need to master its <strong>technical arcana</strong>: how Git and its tooling handle a workshop of this size in practice. »</p>
+      <p>Next step: <a href="/en/quests/A3b-the-city-arcana/" class="quest-link">A3b, The City Arcana</a>.</p>
+    </div>
