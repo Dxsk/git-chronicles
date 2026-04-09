@@ -38,8 +38,9 @@ if ! command -v actionlint >/dev/null 2>&1; then
   (
     cd "$(mktemp -d)"
     curl -sSL \
-      "https://github.com/rhysd/actionlint/releases/latest/download/actionlint_$(uname -s | tr '[:upper:]' '[:lower:]')_amd64.tar.gz" \
-      | tar -xz actionlint
+      https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash \
+      -o download-actionlint.bash
+    bash download-actionlint.bash >/dev/null
     mv actionlint "$bindir/"
   )
   echo "$bindir" >> "${GITHUB_PATH:-/dev/null}"
