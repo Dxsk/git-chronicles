@@ -1,4 +1,16 @@
-name: Package Release
+name: Release
+
+# Publishes the release zip to GitHub Releases.
+#
+# Triggers:
+#   - push to main   -> rolling 'latest' release (edit-or-create)
+#   - tag vX.Y.Z     -> immutable versioned release
+#   - manual dispatch (rebuild either of the above)
+#
+# All non-trivial logic lives in scripts/ci/ so it is testable locally:
+#   scripts/ci/resolve-version.sh  - maps GITHUB_REF to (label, tagged)
+#   scripts/package-release.sh     - builds build/git-chronicles.zip
+#   scripts/ci/publish-release.sh  - calls `gh release create/edit`
 
 on:
   push:
@@ -10,11 +22,11 @@ permissions:
   contents: write
 
 concurrency:
-  group: package-release-${{ github.ref }}
+  group: release-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
-  package:
+  release:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4 (v4.3.1)
