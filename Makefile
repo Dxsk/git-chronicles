@@ -102,6 +102,23 @@ else
 endif
 
 # -----------------------------------------------------------------------------
+# Dependency health: audit and outdated.
+# Kept separate from `lint` because they depend on the network and on an
+# up-to-date npm registry, which makes them flaky for a commit-time gate.
+# -----------------------------------------------------------------------------
+
+.PHONY: deps
+deps: audit outdated ## Run all dependency health checks
+
+.PHONY: audit
+audit: ## Run npm audit (production deps only, fails on any vulnerability)
+	npm audit --omit=dev
+
+.PHONY: outdated
+outdated: ## Show outdated npm dependencies (informational, never fails)
+	@npm outdated || true
+
+# -----------------------------------------------------------------------------
 # Verifier regression tests
 # -----------------------------------------------------------------------------
 
@@ -137,8 +154,26 @@ else
 endif
 
 # -----------------------------------------------------------------------------
-# The big one: full pre-commit / CI gate.
+# Meta targets: umbrella commands for common maintenance flows.
 # -----------------------------------------------------------------------------
 
 .PHONY: check
-check: lint build test ## Full gate: lint + build + tests
+check: lint build test ## Commit-time gate: lint + build + tests
+
+.PHONY: pre-push
+pre-push: check deps ## Pre-push gate: check + dependency health
+
+.PHONY: fresh
+fresh: clean install build ## Nuke build artifacts, reinstall deps, rebuild from scratch
+
+.PHONY: doctor
+doctor: ## Verify required and optional local tooling is installed
+	@echo "▶ Checking local tooling…"
+	@printf '  %-18s ' "node";        command -v node        >/dev/null 2>&1 && node --version        || echo "✗ missing (required)"
+	@printf '  %-18s ' "npm";         command -v npm         >/dev/null 2>&1 && npm --version         || echo "✗ missing (required)"
+	@printf '  %-18s ' "bats";        command -v bats        >/dev/null 2>&1 && bats --version        || echo "✗ missing (required for make test)"
+	@printf '  %-18s ' "shellcheck";  command -v shellcheck  >/dev/null 2>&1 && shellcheck --version | head -2 | tail -1 || echo "✗ missing (required for make lint-shell)"
+	@printf '  %-18s ' "actionlint";  command -v actionlint  >/dev/null 2>&1 && actionlint --version | head -1 || echo "⚠ missing (optional, lint-ci skips gracefully)"
+	@printf '  %-18s ' "pwsh";        [ -n "$(PWSH)" ] && echo "via: $(PWSH)" || echo "⚠ missing (optional, Pester + PSScriptAnalyzer skip gracefully)"
+	@printf '  %-18s ' "gh";          command -v gh          >/dev/null 2>&1 && gh --version | head -1 || echo "⚠ missing (optional, needed by release.yml)"
+	@echo "✓ doctor done."
