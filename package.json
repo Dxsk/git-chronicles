@@ -16,7 +16,7 @@
     "prepare": "husky"
   },
   "devDependencies": {
-    "@11ty/eleventy": "^3.0.0",
+    "@11ty/eleventy": "^3.1.5",
     "@cspell/dict-fr-fr": "^2.3.2",
     "cspell": "^9.7.0",
     "esbuild": "^0.27.3",
