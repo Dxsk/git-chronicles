@@ -8,8 +8,9 @@
     "spell": "cspell \"src/**/*.njk\" \"README*.md\"",
     "spell:fr": "cspell \"src/fr/**/*.njk\" \"README.fr.md\"",
     "spell:en": "cspell \"src/en/**/*.njk\" \"README.md\"",
-    "check": "npm run check:i18n && npm run build && npm run check:links && npm run check:links:external && npm run check:a11y",
+    "check": "npm run check:i18n && npm run check:git-commands && npm run build && npm run check:links && npm run check:links:external && npm run check:a11y",
     "check:i18n": "node scripts/pipeline/check-i18n-parity.js",
+    "check:git-commands": "node scripts/pipeline/check-git-commands.js",
     "check:links": "node scripts/pipeline/check-internal-links.js",
     "check:links:external": "lychee --no-progress --config .lychee.toml --root-dir _site '_site/**/*.html'",
     "check:a11y": "node scripts/pipeline/check-accessibility.js",
@@ -24,5 +25,5 @@
     "husky": "^9.1.7",
     "pagefind": "^1.5.0"
   },
-  "license": "SEE LICENSE IN LICENSE-CODE"
+  "license": "MIT"
 }
