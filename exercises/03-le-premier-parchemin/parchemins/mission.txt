@@ -1,0 +1,32 @@
+========================================================
+      ORDRE DE MISSION DE LA GUILDE DES ARCHIVISTES
+              ~ Premier Parchemin Officiel ~
+========================================================
+
+À l'attention du novice,
+
+Par la présente, la Guilde des Archivistes te reconnaît
+comme apprenti scribe et te confie ta toute première
+mission : apprendre à observer, consigner et sceller.
+
+Trois préceptes guideront ton apprentissage :
+
+  1. OBSERVER  — Rien n'échappe à l'œil de l'archiviste.
+                 Connais l'état de ton dépôt avant d'agir.
+
+  2. CONSIGNER — Chaque changement mérite d'être noté.
+                 Prépare tes parchemins avec soin avant
+                 de les confier aux archives.
+
+  3. SCELLER   — Un commit est un serment. Il fige le
+                 temps et grave ta trace dans l'Histoire.
+                 Choisis tes mots avec gravité.
+
+Ta mission : ajoute ce parchemin à ton archive
+personnelle, puis scelle-le dans les Chroniques par
+un commit dont le message décrira fidèlement ton geste.
+
+Que la Source soit avec toi, novice.
+
+                             — Le Maître Archiviste,
+                               Gardien des Chroniques
