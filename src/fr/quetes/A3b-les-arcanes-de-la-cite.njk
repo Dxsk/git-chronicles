@@ -1,0 +1,762 @@
+---
+layout: layouts/quest.njk
+lang: fr
+quest_id: quest_A3b
+quest_number: "A3b"
+arc: 6
+title: "Les Arcanes de la Cité"
+subtitle: "Scaling Git, sparse checkout et outils monorepo"
+quest_slug_fr: "A3b-les-arcanes-de-la-cite"
+quest_slug_en: "A3b-the-city-arcana"
+permalink: /fr/quetes/A3b-les-arcanes-de-la-cite/
+---
+
+    <!-- Introduction narrative -->
+    <div class="narrative">
+      <p>Tu as compris le choix : la Cité-Monde, un seul atelier géant pour mille artisans. L'Architecte te guide maintenant dans les <strong>caves techniques</strong> de la Cité, là où les ingénieurs maintiennent les mécanismes qui permettent à tout cela de fonctionner sans s'effondrer.</p>
+      <p>« Un monorepo naïf devient vite ingérable : clones de plusieurs gigaoctets, builds interminables, CI qui explose. Les arcanes que je vais te montrer sont les outils sans lesquels aucune vraie cité-monde ne tient debout : <strong>sparse checkout, partial clone, outils de build monorepo, et un pipeline CI intelligent</strong>. »</p>
+      <p>Si tu n'as pas encore lu la quête stratégique, commence par <a href="/fr/quetes/A3a-la-cite-monde/" class="quest-link">A3a, La Cité-Monde (Le Choix du Bâtisseur)</a>.</p>
+    </div>
+
+    <div class="fancy-separator"></div>
+
+    <!-- Section 2 : Git pour les gros repos -->
+    <h2>Git pour les <span class="keyword">gros dépôts</span></h2>
+
+    <p>Quand un dépôt fait des Go ou des dizaines de Go, les opérations Git classiques deviennent très lentes. Git a développé plusieurs fonctionnalités pour résoudre ce problème.</p>
+
+    <h3>Partial clone - ne télécharger que le nécessaire</h3>
+
+    <p>Un <span class="git-cmd">git clone</span> classique télécharge <strong>tous les objets</strong> de l'historique - tous les fichiers, toutes les versions, tous les arbres. Pour un gros dépôt, cela peut prendre des heures.</p>
+
+    <p>Le <span class="keyword">partial clone</span> (clone partiel) permet de ne télécharger que les objets nécessaires. Les objets manquants sont récupérés à la demande, quand tu en as besoin.</p>
+
+    <pre data-lang="bash"><code># Clone sans les blobs (fichiers) - ne télécharge que les métadonnées
+# Les fichiers sont récupérés à la demande quand tu y accèdes
+git clone --filter=blob:none https://github.com/example/huge-repo.git
+
+# Clone sans les arbres de sous-répertoires
+# Encore plus léger, mais un peu plus lent à l'utilisation
+git clone --filter=tree:0 https://github.com/example/huge-repo.git
+
+# Clone filtré par taille - exclure les fichiers de plus de 1 Mo
+git clone --filter=blob:limit=1m https://github.com/example/huge-repo.git</code></pre>
+
+    <h3>Shallow clone - limiter la profondeur d'historique</h3>
+
+    <p>Le <span class="keyword">shallow clone</span> (clone superficiel) ne télécharge que les N derniers commits, sans tout l'historique.</p>
+
+    <pre data-lang="bash"><code># Ne récupérer que le dernier commit
+git clone --depth 1 https://github.com/example/huge-repo.git
+
+# Récupérer les 10 derniers commits
+git clone --depth 10 https://github.com/example/huge-repo.git
+
+# Récupérer plus d'historique si besoin
+git fetch --deepen=50
+
+# Convertir un shallow clone en clone complet
+git fetch --unshallow</code></pre>
+
+    <div class="tip">
+      <p><strong>Quand utiliser quoi ?</strong> Le <strong>partial clone</strong> est préférable pour le développement quotidien (tu as accès à tout l'historique, les fichiers sont chargés à la demande). Le <strong>shallow clone</strong> est idéal pour la CI/CD (tu n'as besoin que du code actuel, pas de l'historique).</p>
+    </div>
+
+    <div class="fancy-separator"></div>
+
+    <!-- Section 3 : Sparse checkout -->
+    <h2><span class="keyword">Sparse checkout</span> - ne récupérer que certains dossiers</h2>
+
+    <p>Dans un monorepo, tu ne travailles probablement que sur un ou deux projets. Le <span class="keyword">sparse checkout</span> te permet de ne matérialiser que les dossiers qui t'intéressent dans ton répertoire de travail.</p>
+
+    <pre data-lang="bash"><code># Cloner le dépôt en mode blobless (rapide)
+git clone --filter=blob:none https://github.com/example/monorepo.git
+cd monorepo
+
+# Activer le sparse checkout en mode cone
+git sparse-checkout init --cone
+
+# Ne récupérer que les dossiers dont tu as besoin
+git sparse-checkout set apps/frontend packages/shared-utils
+
+# Ton répertoire de travail ne contient maintenant QUE :
+# apps/frontend/
+# packages/shared-utils/
+# (plus les fichiers à la racine)
+
+# Ajouter un dossier supplémentaire
+git sparse-checkout add apps/backend-api
+
+# Voir les dossiers inclus
+git sparse-checkout list
+
+# Désactiver le sparse checkout (récupérer tout)
+git sparse-checkout disable</code></pre>
+
+    <p><strong>PowerShell</strong> (Windows) :</p>
+
+    <pre data-lang="powershell"><code># Les commandes sont identiques en PowerShell
+git clone --filter=blob:none https://github.com/example/monorepo.git
+cd monorepo
+
+git sparse-checkout init --cone
+git sparse-checkout set apps/frontend packages/shared-utils
+git sparse-checkout list
+# Pour tout récupérer :
+# git sparse-checkout disable</code></pre>
+
+    <h3>Le mode cone</h3>
+
+    <p>Le flag <code>--cone</code> active le mode "cône" qui est plus rapide et plus intuitif que le mode classique. En mode cône, tu spécifies des <strong>dossiers</strong> entiers à inclure, pas des patterns complexes.</p>
+
+    <pre data-lang="bash"><code># Mode cone (recommandé) - spécifie des dossiers
+git sparse-checkout set apps/frontend packages/ui
+
+# Mode classique (ancien) - utilise des patterns gitignore
+# Plus flexible mais plus lent et plus complexe
+git sparse-checkout init  # (sans --cone)
+echo "apps/frontend/**" >> .git/info/sparse-checkout</code></pre>
+
+    <div class="key-message">
+      <p>La combinaison <strong>partial clone + sparse checkout</strong> est la recette magique pour travailler dans un monorepo sans souffrir. Tu ne télécharges que les métadonnées, et tu ne matérialises que les dossiers dont tu as besoin.</p>
+    </div>
+
+    <div class="fancy-separator"></div>
+
+    <!-- Section 4 : Outils monorepo -->
+    <h2>Les outils <span class="keyword">monorepo</span></h2>
+
+    <p>Git seul ne suffit pas pour gérer un monorepo efficacement. Tu as besoin d'outils qui comprennent la structure de ton projet et optimisent les builds et les tests.</p>
+
+    <h3>Nx (JavaScript / TypeScript)</h3>
+
+    <p><strong>Nx</strong> est un framework de build intelligent pour les monorepos JavaScript/TypeScript. Il comprend les dépendances entre tes projets et ne reconstruit que ce qui a changé.</p>
+
+    <pre data-lang="bash"><code># Créer un nouveau workspace Nx
+npx create-nx-workspace@latest mon-monorepo
+
+# Structure typique d'un workspace Nx
+mon-monorepo/
+├── apps/
+│   ├── frontend/         # Application React/Angular/Vue
+│   └── backend/          # API NestJS/Express
+├── libs/
+│   ├── shared-types/     # Types TypeScript partagés
+│   ├── ui-components/    # Composants UI réutilisables
+│   └── utils/            # Fonctions utilitaires
+├── nx.json               # Configuration Nx
+├── package.json
+└── tsconfig.base.json
+
+# Construire uniquement ce qui est affecté par les changements
+npx nx affected:build
+# Note : depuis Nx 17+, la syntaxe est : nx affected -t build
+
+# Tester uniquement ce qui est affecté
+npx nx affected:test
+# Note : depuis Nx 17+, la syntaxe est : nx affected -t test
+
+# Visualiser le graphe de dépendances
+npx nx graph</code></pre>
+
+    <p>Les concepts clés de Nx :</p>
+    <ul>
+      <li><span class="keyword">Affected</span> : Nx sait quels projets sont impactés par un changement. Si tu modifies <code>shared-types</code>, Nx sait que <code>frontend</code> et <code>backend</code> doivent être retestés, mais pas <code>ui-components</code>.</li>
+      <li><span class="keyword">Cache</span> : Nx met en cache les résultats des builds et des tests. Si rien n'a changé, le résultat est instantané.</li>
+      <li><span class="keyword">Remote cache</span> : le cache peut être partagé entre les développeurs et la CI. Si un collègue a déjà construit le même code, tu récupères son résultat au lieu de reconstruire.</li>
+    </ul>
+
+    <h3>Turborepo</h3>
+
+    <p><strong>Turborepo</strong> (créé par Vercel) est un outil de build pour monorepos JavaScript/TypeScript, plus simple que Nx mais très efficace.</p>
+
+    <pre data-lang="bash"><code># Créer un monorepo Turborepo
+npx create-turbo@latest
+
+# Structure typique
+mon-monorepo/
+├── apps/
+│   ├── web/              # Application Next.js
+│   └── docs/             # Site de documentation
+├── packages/
+│   ├── ui/               # Composants partagés
+│   ├── eslint-config/    # Config ESLint partagée
+│   └── typescript-config/ # Config TS partagée
+├── turbo.json            # Configuration des pipelines
+└── package.json
+
+# turbo.json - définir les pipelines
+# Note : depuis Turborepo 2.x, la clé "pipeline" est renommée en "tasks"
+{
+  "pipeline": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", ".next/**"]
+    },
+    "test": {
+      "dependsOn": ["build"]
+    },
+    "lint": {}
+  }
+}
+
+# Construire tout (avec cache et parallélisation)
+npx turbo build
+
+# Construire uniquement ce qui est affecté par les changements depuis main
+npx turbo build --filter=...[origin/main]</code></pre>
+
+    <h3>Bazel (multi-langage)</h3>
+
+    <p><strong>Bazel</strong> (créé par Google, open source) est le build tool le plus puissant mais aussi le plus complexe. Il supporte n'importe quel langage et fonctionne à l'échelle de Google (des milliards de lignes de code).</p>
+
+    <pre data-lang="bash"><code># Bazel utilise des fichiers BUILD pour décrire les cibles
+# Exemple de fichier BUILD pour un projet Python
+load("@rules_python//python:defs.bzl", "py_binary", "py_test")
+
+py_binary(
+    name = "server",
+    srcs = ["server.py"],
+    deps = [
+        "//libs/auth:auth_lib",
+        "//libs/database:db_lib",
+    ],
+)
+
+py_test(
+    name = "server_test",
+    srcs = ["server_test.py"],
+    deps = [":server"],
+)
+
+# Construire une cible
+bazel build //apps/server:server
+
+# Tester une cible
+bazel test //apps/server:server_test
+
+# Construire tout ce qui est affecté par les changements
+bazel build //... --keep_going</code></pre>
+
+    <p>Les concepts clés de Bazel :</p>
+    <ul>
+      <li><span class="keyword">Herméticité</span> : chaque build est isolé et reproductible. Les mêmes entrées produisent toujours les mêmes sorties.</li>
+      <li><span class="keyword">Cache distribué</span> : les résultats de build sont partagés entre tous les développeurs et la CI.</li>
+      <li><span class="keyword">Multi-langage</span> : Bazel fonctionne avec Java, Python, Go, C++, Rust, JavaScript, et bien d'autres.</li>
+    </ul>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Critère</th>
+          <th>Nx</th>
+          <th>Turborepo</th>
+          <th>Bazel</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Langages</strong></td>
+          <td>JS/TS principalement</td>
+          <td>JS/TS</td>
+          <td>Tous</td>
+        </tr>
+        <tr>
+          <td><strong>Complexité</strong></td>
+          <td>Moyenne</td>
+          <td>Faible</td>
+          <td>Élevée</td>
+        </tr>
+        <tr>
+          <td><strong>Cache distribué</strong></td>
+          <td>Oui (Nx Cloud)</td>
+          <td>Oui (Vercel Remote Cache)</td>
+          <td>Oui (natif)</td>
+        </tr>
+        <tr>
+          <td><strong>Affected detection</strong></td>
+          <td>Oui (excellent)</td>
+          <td>Oui (via filter)</td>
+          <td>Oui (natif)</td>
+        </tr>
+        <tr>
+          <td><strong>Idéal pour</strong></td>
+          <td>Projets JS/TS moyens à grands</td>
+          <td>Projets JS/TS petits à moyens</td>
+          <td>Très gros projets multi-langages</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="fancy-separator"></div>
+
+    <!-- Section 5 : Dépendances inter-packages -->
+    <h2>Gérer les <span class="keyword">dépendances</span> dans un monorepo</h2>
+
+    <p>L'un des grands avantages du monorepo, c'est le partage de code. Mais il faut le faire proprement.</p>
+
+    <h3>Workspaces npm/pnpm/yarn</h3>
+
+    <p>Les gestionnaires de paquets modernes supportent nativement les <span class="keyword">workspaces</span> - un mécanisme pour lier les packages locaux entre eux sans passer par un registre npm.</p>
+
+    <pre data-lang="bash"><code># package.json racine avec workspaces npm
+{
+  "name": "mon-monorepo",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
+}
+
+# package.json d'une app qui utilise un package local
+{
+  "name": "frontend",
+  "dependencies": {
+    "shared-utils": "*",
+    "ui-components": "*"
+  }
+}
+
+# npm résout automatiquement les dépendances locales
+# Pas besoin de publier les packages - ils sont liés directement
+
+# Installer toutes les dépendances (racine)
+npm install
+
+# Exécuter un script dans un workspace spécifique
+npm run build --workspace=apps/frontend</code></pre>
+
+    <h3>Avec pnpm (recommandé pour les monorepos)</h3>
+
+    <pre data-lang="bash"><code># pnpm-workspace.yaml
+packages:
+  - 'apps/*'
+  - 'packages/*'
+
+# pnpm est plus rapide et utilise moins d'espace disque que npm
+# grâce à son stockage par liens symboliques
+
+# Installer toutes les dépendances
+pnpm install
+
+# Exécuter une commande dans tous les packages
+pnpm -r build
+
+# Exécuter dans un package spécifique
+pnpm --filter frontend build
+
+# Exécuter dans les packages affectés par un changement
+pnpm --filter "...[origin/main]" build</code></pre>
+
+    <div class="fancy-separator"></div>
+
+    <!-- Section 6 : CI/CD dans un monorepo -->
+    <h2>CI/CD dans un <span class="keyword">monorepo</span></h2>
+
+    <p>Le plus grand défi d'un monorepo est la CI/CD. Tu ne veux pas reconstruire et retester <strong>tout</strong> à chaque commit - ce serait trop lent. Il faut détecter ce qui a changé et ne traiter que ça.</p>
+
+    <h3>Affected detection avec Git</h3>
+
+    <pre data-lang="bash"><code># Voir quels fichiers ont changé depuis la branche main
+git diff --name-only origin/main...HEAD
+
+# Exemple de sortie :
+# apps/frontend/src/App.tsx
+# packages/shared-utils/src/format.ts
+
+# Script pour détecter les packages affectés
+# Si un fichier dans apps/frontend/ a changé → tester frontend
+# Si un fichier dans packages/shared-utils/ a changé → tester tout ce qui en dépend</code></pre>
+
+    <h3>GitHub Actions avec affected detection</h3>
+
+    {% raw %}<pre data-lang="yaml"><code># .github/workflows/ci.yml
+name: CI
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      frontend: ${{ steps.changes.outputs.frontend }}
+      backend: ${{ steps.changes.outputs.backend }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            frontend:
+              - 'apps/frontend/**'
+              - 'packages/shared-utils/**'
+              - 'packages/ui-components/**'
+            backend:
+              - 'apps/backend/**'
+              - 'packages/shared-utils/**'
+
+  test-frontend:
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.frontend == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci
+      - run: npm run test --workspace=apps/frontend
+
+  test-backend:
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.backend == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci
+      - run: npm run test --workspace=apps/backend</code></pre>{% endraw %}
+
+    <h3>Avec Nx</h3>
+
+    <pre data-lang="bash"><code># Nx rend l'affected detection triviale
+# Dans le workflow CI :
+- run: npx nx affected:test --base=origin/main
+- run: npx nx affected:build --base=origin/main
+- run: npx nx affected:lint --base=origin/main
+# Note : depuis Nx 17+, la syntaxe est :
+# nx affected -t test --base=origin/main
+# nx affected -t build --base=origin/main
+# nx affected -t lint --base=origin/main
+
+# Nx comprend le graphe de dépendances et ne teste
+# que les projets réellement impactés par les changements</code></pre>
+
+    <div class="key-message">
+      <p>La clé d'un monorepo performant, c'est de ne jamais tout reconstruire. L'<strong>affected detection</strong> et le <strong>cache</strong> sont les deux piliers qui rendent un monorepo viable à grande échelle.</p>
+    </div>
+
+    <div class="fancy-separator"></div>
+
+    <!-- Exercice pratique -->
+    <h2>Exercice pratique - <span class="keyword">Mini-monorepo avec sparse checkout</span></h2>
+
+    <div class="quest-objective">
+      <p>Crée un mini-monorepo, puis utilise le sparse checkout pour ne travailler que sur une partie du code. Tu vas simuler le workflow d'un développeur dans un grand monorepo.</p>
+    </div>
+
+    <h3>Étape 1 - Créer le monorepo</h3>
+
+    <pre data-lang="bash"><code># Créer le monorepo
+mkdir cite-monde-monorepo
+cd cite-monde-monorepo
+git init
+
+# Créer la structure
+mkdir -p apps/frontend/src
+mkdir -p apps/backend/src
+mkdir -p apps/mobile/src
+mkdir -p packages/shared-utils/src
+mkdir -p packages/ui-components/src
+mkdir -p docs</code></pre>
+
+    <pre data-lang="powershell"><code># Créer le monorepo
+mkdir cite-monde-monorepo
+cd cite-monde-monorepo
+git init
+
+# Créer la structure
+New-Item -ItemType Directory -Force -Path apps/frontend/src
+New-Item -ItemType Directory -Force -Path apps/backend/src
+New-Item -ItemType Directory -Force -Path apps/mobile/src
+New-Item -ItemType Directory -Force -Path packages/shared-utils/src
+New-Item -ItemType Directory -Force -Path packages/ui-components/src
+New-Item -ItemType Directory -Force -Path docs</code></pre>
+
+    <h3>Étape 2 - Ajouter du contenu dans chaque projet</h3>
+
+    <pre data-lang="bash"><code># Frontend
+cat > apps/frontend/src/index.js << 'EOF'
+// Application frontend de la Cité-Monde
+import { formatName } from '../../../packages/shared-utils/src/format.js';
+console.log("Frontend chargé !");
+console.log(formatName("Aventurier"));
+EOF
+
+# Backend
+cat > apps/backend/src/server.js << 'EOF'
+// API backend de la Cité-Monde
+const http = require('http');
+const server = http.createServer((req, res) => {
+  res.writeHead(200, {'Content-Type': 'text/plain'});
+  res.end('API de la Cité-Monde');
+});
+server.listen(3000);
+console.log("Serveur backend démarré sur le port 3000");
+EOF
+
+# Mobile
+cat > apps/mobile/src/app.js << 'EOF'
+// Application mobile de la Cité-Monde
+console.log("App mobile initialisée !");
+EOF
+
+# Shared utils
+cat > packages/shared-utils/src/format.js << 'EOF'
+// Fonctions utilitaires partagées
+export function formatName(name) {
+  return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+}
+export function formatDate(date) {
+  return new Date(date).toLocaleDateString('fr-FR');
+}
+EOF
+
+# UI components
+cat > packages/ui-components/src/button.js << 'EOF'
+// Composant bouton partagé
+export function createButton(label, onClick) {
+  const btn = document.createElement('button');
+  btn.textContent = label;
+  btn.addEventListener('click', onClick);
+  return btn;
+}
+EOF
+
+# Documentation
+cat > docs/architecture.md << 'EOF'
+# Architecture de la Cité-Monde
+
+Ce monorepo contient :
+- 3 applications (frontend, backend, mobile)
+- 2 packages partagés (shared-utils, ui-components)
+EOF
+
+# README racine
+cat > README.md << 'EOF'
+# Cité-Monde Monorepo
+Un mini-monorepo d'exercice pour les Chroniques du Versionneur.
+EOF</code></pre>
+
+    <pre data-lang="powershell"><code># Frontend
+@"
+// Application frontend de la Cité-Monde
+import { formatName } from '../../../packages/shared-utils/src/format.js';
+console.log("Frontend chargé !");
+console.log(formatName("Aventurier"));
+"@ | Set-Content apps/frontend/src/index.js
+
+# Backend
+@"
+// API backend de la Cité-Monde
+const http = require('http');
+const server = http.createServer((req, res) => {
+  res.writeHead(200, {'Content-Type': 'text/plain'});
+  res.end('API de la Cité-Monde');
+});
+server.listen(3000);
+console.log("Serveur backend démarré sur le port 3000");
+"@ | Set-Content apps/backend/src/server.js
+
+# Mobile
+@"
+// Application mobile de la Cité-Monde
+console.log("App mobile initialisée !");
+"@ | Set-Content apps/mobile/src/app.js
+
+# Shared utils
+@"
+// Fonctions utilitaires partagées
+export function formatName(name) {
+  return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+}
+export function formatDate(date) {
+  return new Date(date).toLocaleDateString('fr-FR');
+}
+"@ | Set-Content packages/shared-utils/src/format.js
+
+# UI components
+@"
+// Composant bouton partagé
+export function createButton(label, onClick) {
+  const btn = document.createElement('button');
+  btn.textContent = label;
+  btn.addEventListener('click', onClick);
+  return btn;
+}
+"@ | Set-Content packages/ui-components/src/button.js
+
+# Documentation
+@"
+# Architecture de la Cité-Monde
+
+Ce monorepo contient :
+- 3 applications (frontend, backend, mobile)
+- 2 packages partagés (shared-utils, ui-components)
+"@ | Set-Content docs/architecture.md
+
+# README racine
+"# Cité-Monde Monorepo`nUn mini-monorepo d'exercice pour les Chroniques du Versionneur." | Set-Content README.md</code></pre>
+
+    <h3>Étape 3 - Commiter tout le contenu</h3>
+
+    <pre data-lang="bash"><code>git add .
+git commit -m "Initialiser le monorepo de la Cité-Monde"</code></pre>
+
+    <pre data-lang="powershell"><code>git add .
+git commit -m "Initialiser le monorepo de la Cité-Monde"</code></pre>
+
+    <h3>Étape 4 - Utiliser le sparse checkout</h3>
+
+    <p>Maintenant, simulons un développeur frontend qui ne veut travailler que sur son application et les packages partagés.</p>
+
+    <pre data-lang="bash"><code># Activer le sparse checkout
+git sparse-checkout init --cone
+
+# Ne récupérer que le frontend et les packages partagés
+git sparse-checkout set apps/frontend packages/shared-utils packages/ui-components
+
+# Vérifier ce qui est visible
+ls apps/
+# → frontend/  (pas de backend/ ni mobile/)
+
+ls packages/
+# → shared-utils/  ui-components/
+
+# La documentation n'est pas visible non plus
+ls docs/ 2>/dev/null || echo "docs/ n'est pas dans le sparse checkout"
+
+# Voir les patterns actifs
+git sparse-checkout list</code></pre>
+
+    <pre data-lang="powershell"><code># Activer le sparse checkout
+git sparse-checkout init --cone
+
+# Ne récupérer que le frontend et les packages partagés
+git sparse-checkout set apps/frontend packages/shared-utils packages/ui-components
+
+# Vérifier ce qui est visible
+Get-ChildItem apps/
+# frontend/  (pas de backend/ ni mobile/)
+
+Get-ChildItem packages/
+# shared-utils/  ui-components/
+
+# Voir les patterns actifs
+git sparse-checkout list</code></pre>
+
+    <h3>Étape 5 - Travailler normalement</h3>
+
+    <pre data-lang="bash"><code># Modifier un fichier dans le frontend
+echo "// Nouvelle fonctionnalité" >> apps/frontend/src/index.js
+
+# Git fonctionne normalement
+git add apps/frontend/src/index.js
+git commit -m "Ajouter une fonctionnalité au frontend"
+
+# L'historique complet est toujours accessible
+git log --oneline
+
+# Si tu as besoin du backend temporairement :
+git sparse-checkout add apps/backend
+ls apps/
+# → backend/  frontend/
+
+# Pour tout désactiver et revenir au mode normal :
+git sparse-checkout disable</code></pre>
+
+    <pre data-lang="powershell"><code># Modifier un fichier dans le frontend
+Add-Content apps/frontend/src/index.js "// Nouvelle fonctionnalité"
+
+# Git fonctionne normalement
+git add apps/frontend/src/index.js
+git commit -m "Ajouter une fonctionnalité au frontend"
+
+# L'historique complet est toujours accessible
+git log --oneline
+
+# Si tu as besoin du backend temporairement :
+git sparse-checkout add apps/backend
+
+# Pour tout désactiver et revenir au mode normal :
+# git sparse-checkout disable</code></pre>
+
+    <div class="key-message">
+      <p>Le sparse checkout te permet de travailler dans un monorepo comme si tu étais dans un polyrepo, tout en gardant l'avantage d'un historique et de commits atomiques partagés.</p>
+    </div>
+
+    <div class="fancy-separator"></div>
+
+    <!-- Récapitulatif -->
+    <h2>Récapitulatif des commandes</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Commande</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="git-cmd">git clone --filter=blob:none</span></td>
+          <td>Partial clone sans les blobs (téléchargement à la demande)</td>
+        </tr>
+        <tr>
+          <td><span class="git-cmd">git clone --filter=tree:0</span></td>
+          <td>Partial clone sans les arbres (encore plus léger)</td>
+        </tr>
+        <tr>
+          <td><span class="git-cmd">git clone --depth N</span></td>
+          <td>Shallow clone avec N commits d'historique</td>
+        </tr>
+        <tr>
+          <td><span class="git-cmd">git fetch --unshallow</span></td>
+          <td>Convertir un shallow clone en clone complet</td>
+        </tr>
+        <tr>
+          <td><span class="git-cmd">git sparse-checkout init --cone</span></td>
+          <td>Activer le sparse checkout en mode cône</td>
+        </tr>
+        <tr>
+          <td><span class="git-cmd">git sparse-checkout set &lt;dossiers&gt;</span></td>
+          <td>Définir les dossiers à matérialiser</td>
+        </tr>
+        <tr>
+          <td><span class="git-cmd">git sparse-checkout add &lt;dossier&gt;</span></td>
+          <td>Ajouter un dossier au sparse checkout</td>
+        </tr>
+        <tr>
+          <td><span class="git-cmd">git sparse-checkout list</span></td>
+          <td>Voir les dossiers inclus</td>
+        </tr>
+        <tr>
+          <td><span class="git-cmd">git sparse-checkout disable</span></td>
+          <td>Désactiver le sparse checkout (tout récupérer)</td>
+        </tr>
+        <tr>
+          <td><span class="git-cmd">git maintenance start</span></td>
+          <td>Activer la maintenance automatique du dépôt</td>
+        </tr>
+        <tr>
+          <td><span class="git-cmd">git diff --name-only main...HEAD</span></td>
+          <td>Voir les fichiers changés depuis main (affected detection)</td>
+        </tr>
+        <tr>
+          <td><code>npx nx affected:test</code></td>
+          <td>Tester les projets affectés (Nx)</td>
+        </tr>
+        <tr>
+          <td><code>npx turbo build --filter=...[main]</code></td>
+          <td>Construire les packages affectés (Turborepo)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="fancy-separator"></div>
+
+    <!-- Conclusion narrative -->
+    <div class="narrative">
+      <p>L'Architecte de la Cité te raccompagne jusqu'aux portes de la métropole. Le soleil se couche sur les toits infinis de l'atelier-monde.</p>
+      <p>« Tu as vu les deux voies. Le village et la cité. Le polyrepo et le monorepo. Chacun a sa place dans le monde. Le village est simple, autonome, rapide à construire. La cité est puissante, cohérente, mais elle demande des routes, des règles, des architectes. »</p>
+      <p>« Ne choisis pas la cité par vanité. Ne choisis pas le village par paresse. Choisis en fonction de <strong>ce que tu construis et avec qui</strong>. Et surtout, souviens-toi : <strong>un monorepo sans outillage, c'est un chaos organisé</strong>. Investis dans les fondations, ou ne construis pas de cité. »</p>
+      <p>Il te serre la main et retourne à ses plans. La Cité-Monde continue de grandir, pierre après pierre, commit après commit.</p>
+    </div>
