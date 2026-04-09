@@ -24,6 +24,18 @@ Le cours contient **29 quêtes** réparties en 5 arcs narratifs, de `git init` j
 
 En complément, tu trouveras **4 aide-mémoire** imprimables (Git Essentiel, Git Avancé, Git LFS, Radicle) ainsi que des **scripts de vérification** pour chaque quête, disponibles en Bash et PowerShell avec le support `--lang fr/en`.
 
+## Télécharger et vérifier
+
+Les exercices et les scripts de vérification sont publiés sous forme d'archive signée à chaque push sur `main` :
+
+```bash
+curl -LO https://github.com/Dxsk/git-chronicles/releases/latest/download/git-chronicles.zip
+curl -LO https://github.com/Dxsk/git-chronicles/releases/latest/download/git-chronicles.zip.sha256
+sha256sum -c git-chronicles.zip.sha256
+```
+
+L'archive contient un fichier `BUILD_INFO` à sa racine qui identifie le commit exact ayant servi à la construire. Voir [docs/RELEASING.md](docs/RELEASING.md) pour les détails sur la génération et la vérification.
+
 ## Structure
 
 ```

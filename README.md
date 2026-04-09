@@ -24,6 +24,18 @@ The course contains **29 quests** across 5 narrative arcs, from `git init` to CI
 
 On top of that, **4 printable cheatsheets** (Git Essentials, Advanced Git, Git LFS, Radicle) and **verification scripts** for each quest in Bash and PowerShell, with `--lang fr/en` support.
 
+## Download and verify
+
+The exercises and verification scripts are published as a signed zip on every push to `main`:
+
+```bash
+curl -LO https://github.com/Dxsk/git-chronicles/releases/latest/download/git-chronicles.zip
+curl -LO https://github.com/Dxsk/git-chronicles/releases/latest/download/git-chronicles.zip.sha256
+sha256sum -c git-chronicles.zip.sha256
+```
+
+The zip contains a `BUILD_INFO` file at its root identifying the exact commit it was built from. See [docs/RELEASING.md](docs/RELEASING.md) for details on how the release is produced and verified.
+
 ## Structure
 
 ```
