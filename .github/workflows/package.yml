@@ -3,13 +3,14 @@ name: Package Release
 on:
   push:
     branches: [main]
+    tags: ['v*']
   workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
-  group: package-release
+  group: package-release-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -18,12 +19,28 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Resolve version label
+        id: version
+        run: |
+          set -euo pipefail
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            echo "label=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"
+            echo "tagged=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "label=latest" >> "$GITHUB_OUTPUT"
+            echo "tagged=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Build release zip
+        env:
+          PACKAGE_VERSION: ${{ steps.version.outputs.label }}
         run: ./scripts/package-release.sh
 
-      - name: Publish rolling 'latest' release
+      - name: Publish release
         env:
           GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.label }}
+          TAGGED: ${{ steps.version.outputs.tagged }}
         run: |
           set -euo pipefail
           cd build
@@ -39,20 +56,27 @@ jobs:
           sha256sum -c git-chronicles.zip.sha256
           \`\`\`"
 
-          # Edit-or-create: keep the 'latest' tag stable, move it to the
-          # new commit, replace the two assets. Avoids delete+recreate
-          # race windows and surfaces real errors.
-          if gh release view latest >/dev/null 2>&1; then
-            gh release upload latest \
-              git-chronicles.zip git-chronicles.zip.sha256 --clobber
-            gh release edit latest \
-              --target "${{ github.sha }}" \
-              --title "Latest build" \
-              --notes "$NOTES"
-          else
-            gh release create latest \
-              --target "${{ github.sha }}" \
-              --title "Latest build" \
+          if [ "$TAGGED" = "true" ]; then
+            # Immutable versioned release. Never overwrite an existing tag.
+            gh release create "$VERSION" \
+              --title "$VERSION" \
               --notes "$NOTES" \
               git-chronicles.zip git-chronicles.zip.sha256
+          else
+            # Rolling 'latest' release. Edit-or-create keeps the tag
+            # stable, moves it to the new commit, replaces assets.
+            if gh release view latest >/dev/null 2>&1; then
+              gh release upload latest \
+                git-chronicles.zip git-chronicles.zip.sha256 --clobber
+              gh release edit latest \
+                --target "${{ github.sha }}" \
+                --title "Latest build" \
+                --notes "$NOTES"
+            else
+              gh release create latest \
+                --target "${{ github.sha }}" \
+                --title "Latest build" \
+                --notes "$NOTES" \
+                git-chronicles.zip git-chronicles.zip.sha256
+            fi
           fi
