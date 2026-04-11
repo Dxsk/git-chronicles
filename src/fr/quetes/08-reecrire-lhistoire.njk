@@ -103,7 +103,7 @@ git rebase main</code></pre>
 
         <h3>Merge (fusion)</h3>
 
-        <pre data-lang="bash"><code>git checkout main
+        <pre data-lang="bash"><code>git switch main
 git merge feature</code></pre>
 
         <pre><code>      C---D  (feature)
@@ -337,7 +337,7 @@ git commit -m "Ajouter l'entrée du Jour 5"</code></pre>
 
         <p>Retourne sur <code>main</code> et ajoute un commit :</p>
 
-        <pre data-lang="bash"><code>git checkout main
+        <pre data-lang="bash"><code>git switch main
 
 echo "Annexe : Liste des rois" >> annexes.txt
 git add annexes.txt
