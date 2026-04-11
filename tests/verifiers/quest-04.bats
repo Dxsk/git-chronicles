@@ -32,14 +32,14 @@ build_pass_scenario() {
 @test "quest 04: verifier passes with full remote + clone + bare setup" {
   build_pass_scenario
   run run_verifier "$QUEST" "work"
-  [[ "$output" == *"8 / 8"* ]]
+  [[ "$output" == *"9 / 9"* ]]
 }
 
 @test "quest 04: fails when ma-copie/ is missing" {
   build_pass_scenario
   rm -rf "$TMP_DIR/work/ma-copie"
   run run_verifier "$QUEST" "work"
-  [[ "$output" != *"8 / 8"* ]]
+  [[ "$output" != *"9 / 9"* ]]
   [[ "$output" == *"ma-copie"* ]]
 }
 
@@ -47,7 +47,7 @@ build_pass_scenario() {
   build_pass_scenario
   rm -rf "$TMP_DIR/work/archive-centrale.git"
   run run_verifier "$QUEST" "work"
-  [[ "$output" != *"8 / 8"* ]]
+  [[ "$output" != *"9 / 9"* ]]
   [[ "$output" == *"bare"* ]]
 }
 
@@ -57,7 +57,7 @@ build_pass_scenario() {
   git remote rename origin origine
   cd - >/dev/null
   run run_verifier "$QUEST" "work"
-  [[ "$output" != *"8 / 8"* ]]
+  [[ "$output" != *"9 / 9"* ]]
   [[ "$output" == *"origin"* ]]
 }
 
@@ -67,7 +67,7 @@ build_pass_scenario() {
   git branch -m main master
   cd - >/dev/null
   run run_verifier "$QUEST" "work"
-  [[ "$output" != *"8 / 8"* ]]
+  [[ "$output" != *"9 / 9"* ]]
   [[ "$output" == *"main"* ]]
 }
 
@@ -75,7 +75,7 @@ build_pass_scenario() {
   build_pass_scenario
   echo "ref: refs/heads/master" > "$TMP_DIR/work/archive-centrale.git/HEAD"
   run run_verifier "$QUEST" "work"
-  [[ "$output" != *"8 / 8"* ]]
+  [[ "$output" != *"9 / 9"* ]]
 }
 
 @test "quest 04: fails when clone-depuis-bare is on branch master" {
@@ -84,7 +84,7 @@ build_pass_scenario() {
   git branch -m main master
   cd - >/dev/null
   run run_verifier "$QUEST" "work"
-  [[ "$output" != *"8 / 8"* ]]
+  [[ "$output" != *"9 / 9"* ]]
 }
 
 @test "quest 04: fails when ma-copie and clone-depuis-bare HEADs diverge" {
@@ -95,5 +95,15 @@ build_pass_scenario() {
   git commit -q -m "Diverging commit"
   cd - >/dev/null
   run run_verifier "$QUEST" "work"
-  [[ "$output" != *"8 / 8"* ]]
+  [[ "$output" != *"9 / 9"* ]]
+}
+
+@test "quest 04: fails when clone-depuis-bare has remote named 'origine' instead of 'origin'" {
+  build_pass_scenario
+  cd "$TMP_DIR/work/clone-depuis-bare"
+  git remote rename origin origine
+  cd - >/dev/null
+  run run_verifier "$QUEST" "work"
+  [[ "$output" != *"9 / 9"* ]]
+  [[ "$output" == *"origin"* ]]
 }

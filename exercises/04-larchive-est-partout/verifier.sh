@@ -69,10 +69,14 @@ check_step 6 "clone-depuis-bare/ existe et c'est un repo Git" \
 check_step 7 "clone-depuis-bare/ est sur la branche 'main'" \
     'assert_branch_is "$WORKDIR/clone-depuis-bare" "main"'
 
+# ---- Step 8 : clone-depuis-bare/ a une remote nommee 'origin' ----
+check_step 8 "clone-depuis-bare/ a une remote nommee 'origin'" \
+    'assert_remote_name "$WORKDIR/clone-depuis-bare" "origin"'
+
 show_section "Coherence inter-depots"
 
-# ---- Step 8 : Les trois depots partagent le meme HEAD ----
-check_step 8 "Les trois depots partagent le meme HEAD" \
+# ---- Step 9 : Les trois depots partagent le meme HEAD ----
+check_step 9 "Les trois depots partagent le meme HEAD" \
     'assert_same_head "$WORKDIR/ma-copie" "$WORKDIR/clone-depuis-bare"'
 
 show_score
