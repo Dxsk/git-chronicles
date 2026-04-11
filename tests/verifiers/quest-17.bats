@@ -90,3 +90,34 @@ SH
   # indented '- name:' entries even though it has 2 bare 'name:' lines.
   [[ "$output" != *"5 / 5"* ]]
 }
+
+@test "quest 17: fails when workflow has exactly one indented step" {
+  mkdir -p "$TMP_DIR/work/.github/workflows" "$TMP_DIR/work/tests"
+  cd "$TMP_DIR/work"
+  git init -q
+  cat > .github/workflows/ci.yml <<'YAML'
+name: Single Step Workflow
+on: [push]
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+YAML
+  cat > tests/run.sh <<'SH'
+#!/usr/bin/env bash
+echo ok
+SH
+  chmod +x tests/run.sh
+  git add . && git commit -q -m "single-step workflow"
+  cd - >/dev/null
+
+  run run_verifier "$QUEST" "work"
+  # Step 4 requires at least TWO indented '- name:' entries. A workflow
+  # with exactly one step should therefore fail step 4 and not reach 5/5.
+  [[ "$output" != *"5 / 5"* ]]
+}
