@@ -85,7 +85,7 @@ A---B---E---F  (main)</code></pre>
         <h3>How to rebase</h3>
 
         <pre data-lang="bash"><code># Switch to the branch to rebase
-git checkout feature
+git switch feature
 
 # Rebase onto main
 git rebase main</code></pre>
@@ -118,7 +118,7 @@ A---B---E---F---G  (main, merge commit)</code></pre>
 
         <h3>Rebase</h3>
 
-        <pre data-lang="bash"><code>git checkout feature
+        <pre data-lang="bash"><code>git switch feature
 git rebase main</code></pre>
 
         <pre><code>              C'---D'  (feature)
@@ -323,7 +323,7 @@ git commit -m "Addd Day 3 entry"</code></pre>
 
         <p>Create a <code>refonte-archives</code> branch and add entries to it:</p>
 
-        <pre data-lang="bash"><code>git checkout -b refonte-archives
+        <pre data-lang="bash"><code>git switch -c refonte-archives
 
 echo "Day 4: Construction of the fortress" >> registre.txt
 git add registre.txt
@@ -347,7 +347,7 @@ git commit -m "Add the list of kings as appendix"</code></pre>
 
         <p>Rebase <code>refonte-archives</code> onto <code>main</code> to get a linear history:</p>
 
-        <pre data-lang="bash"><code>git checkout refonte-archives
+        <pre data-lang="bash"><code>git switch refonte-archives
 git rebase main</code></pre>
 
         <h3>Step 7 - Verify the result</h3>
