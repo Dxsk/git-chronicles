@@ -57,7 +57,7 @@ origin  /chemin/vers/depot.git (push)</code></pre>
 
     <p>Exemple :</p>
 
-    <pre data-lang="bash"><code>git remote add portail /tmp/portail-central.git</code></pre>
+    <pre data-lang="bash"><code>git remote add origin /tmp/portail-central.git</code></pre>
 
     <p>Par convention :</p>
     <ul>
@@ -76,17 +76,17 @@ origin  /chemin/vers/depot.git (push)</code></pre>
 
     <p>Exemple :</p>
 
-    <pre data-lang="bash"><code>git push portail main</code></pre>
+    <pre data-lang="bash"><code>git push origin main</code></pre>
 
-    <p>Cela envoie tous les commits de ta branche <code>main</code> qui n'existent pas encore sur le remote <code>portail</code>.</p>
+    <p>Cela envoie tous les commits de ta branche <code>main</code> qui n'existent pas encore sur le remote <code>origin</code>.</p>
 
     <h3>Configurer le suivi avec <code>-u</code></h3>
 
     <p>La première fois que tu pousses une branche, tu peux configurer le <span class="keyword">suivi</span> (tracking) :</p>
 
-    <pre data-lang="bash"><code>git push -u portail main</code></pre>
+    <pre data-lang="bash"><code>git push -u origin main</code></pre>
 
-    <p>L'option <code>-u</code> (ou <code>--set-upstream</code>) crée un lien permanent entre ta branche locale <code>main</code> et la branche <code>main</code> du remote <code>portail</code>. Après cela, tu pourras simplement écrire :</p>
+    <p>L'option <code>-u</code> (ou <code>--set-upstream</code>) crée un lien permanent entre ta branche locale <code>main</code> et la branche <code>main</code> du remote <code>origin</code>. Après cela, tu pourras simplement écrire :</p>
 
     <pre data-lang="bash"><code>git push</code></pre>
 
@@ -103,7 +103,7 @@ origin  /chemin/vers/depot.git (push)</code></pre>
 
     <pre data-lang="bash"><code>git fetch &lt;remote&gt;</code></pre>
 
-    <p><span class="git-cmd">git fetch</span> télécharge les nouveaux commits depuis le remote, mais <strong><span class="highlight-red">ne modifie rien dans ton travail</span></strong>. Les changements sont stockés dans les <span class="keyword">branches de suivi</span> (comme <code>portail/main</code>), pas dans tes branches locales.</p>
+    <p><span class="git-cmd">git fetch</span> télécharge les nouveaux commits depuis le remote, mais <strong><span class="highlight-red">ne modifie rien dans ton travail</span></strong>. Les changements sont stockés dans les <span class="keyword">branches de suivi</span> (comme <code>origin/main</code>), pas dans tes branches locales.</p>
 
     <div class="tip">
       <p><span class="git-cmd">git fetch</span>, c'est comme regarder à travers le portail pour voir ce que les autres Archivistes ont fait, <strong>sans toucher à tes propres parchemins</strong>.</p>
@@ -173,24 +173,24 @@ git branch -a</code></pre>
     <p>Tu verras quelque chose comme :</p>
 
     <pre data-lang="bash"><code>* main
-  remotes/portail/main</code></pre>
+  remotes/origin/main</code></pre>
 
-    <h3><code>portail/main</code> vs <code>main</code></h3>
+    <h3><code>origin/main</code> vs <code>main</code></h3>
 
     <ul>
       <li><strong><code>main</code></strong> : ta branche locale. C'est là que tu travailles.</li>
-      <li><strong><code>portail/main</code></strong> (ou <code>remotes/portail/main</code>) : la branche de suivi. C'est la <strong>dernière image connue</strong> de la branche <code>main</code> sur le remote <code>portail</code>.</li>
+      <li><strong><code>origin/main</code></strong> (ou <code>remotes/origin/main</code>) : la branche de suivi. C'est la <strong>dernière image connue</strong> de la branche <code>main</code> sur le remote <code>origin</code>.</li>
     </ul>
 
     <div class="key-message">
-      <p>Après un <span class="git-cmd">git fetch</span>, la branche de suivi <code>portail/main</code> est à jour avec le remote, mais ta branche locale <code>main</code> n'a pas bougé. C'est à toi de décider quand fusionner.</p>
+      <p>Après un <span class="git-cmd">git fetch</span>, la branche de suivi <code>origin/main</code> est à jour avec le remote, mais ta branche locale <code>main</code> n'a pas bougé. C'est à toi de décider quand fusionner.</p>
     </div>
 
     <pre data-lang="bash"><code># Voir les commits distants non encore fusionnés
-git log main..portail/main --oneline
+git log main..origin/main --oneline
 
 # Fusionner quand tu es prêt
-git merge portail/main</code></pre>
+git merge origin/main</code></pre>
 
     <div class="fancy-separator"></div>
 
@@ -203,7 +203,7 @@ git merge portail/main</code></pre>
 
     <p>Exemple :</p>
 
-    <pre data-lang="bash"><code>git push portail --delete ancienne-expedition</code></pre>
+    <pre data-lang="bash"><code>git push origin --delete ancienne-expedition</code></pre>
 
     <div class="tip">
       <p>Cela supprime la branche <strong>sur le remote seulement</strong>. Ta branche locale n'est pas affectée.</p>
@@ -219,8 +219,8 @@ git merge portail/main</code></pre>
     <div class="steps">
       <ol>
         <li><strong><span class="git-cmd">git fetch</span></strong> - Télécharge les nouveautés</li>
-        <li><strong>Examine</strong> - <code>git log main..portail/main</code> pour voir ce qui a changé</li>
-        <li><strong>Fusionne ou rebase</strong> - <code>git merge portail/main</code> ou <code>git rebase portail/main</code></li>
+        <li><strong>Examine</strong> - <code>git log main..origin/main</code> pour voir ce qui a changé</li>
+        <li><strong>Fusionne ou rebase</strong> - <code>git merge origin/main</code> ou <code>git rebase origin/main</code></li>
         <li><strong>Travaille</strong> - Fais tes propres commits</li>
         <li><strong>Pousse</strong> - <span class="git-cmd">git push</span> pour partager ton travail</li>
       </ol>
@@ -257,19 +257,19 @@ cd ..</code></pre>
 
     <h3>Étape 2 - Créer le Portail Central (bare repo)</h3>
 
-    <pre data-lang="bash"><code>git init --bare portail-central.git</code></pre>
+    <pre data-lang="bash"><code>git init -b main --bare portail-central.git</code></pre>
 
     <h3>Étape 3 - Ouvrir le portail depuis ta citadelle</h3>
 
     <pre data-lang="bash"><code>cd citadelle
-git remote add portail ../portail-central.git
+git remote add origin ../portail-central.git
 git remote -v
 cd ..</code></pre>
 
     <h3>Étape 4 - Envoyer tes chroniques</h3>
 
     <pre data-lang="bash"><code>cd citadelle
-git push -u portail main
+git push -u origin main
 cd ..</code></pre>
 
     <h3>Étape 5 - Un autre Archiviste arrive</h3>
@@ -286,14 +286,14 @@ cd ..</code></pre>
     <h3>Étape 6 - Découvrir les changements (fetch)</h3>
 
     <pre data-lang="bash"><code>cd citadelle
-git fetch portail
+git fetch origin
 
 # Examine ce qui a changé
-git log main..portail/main --oneline</code></pre>
+git log main..origin/main --oneline</code></pre>
 
     <h3>Étape 7 - Intégrer les changements (merge)</h3>
 
-    <pre data-lang="bash"><code>git merge portail/main
+    <pre data-lang="bash"><code>git merge origin/main
 
 # Vérifie que le fichier contient les deux contributions
 cat chroniques.md</code></pre>
