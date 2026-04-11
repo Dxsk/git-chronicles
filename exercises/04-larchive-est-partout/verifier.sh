@@ -73,10 +73,21 @@ check_step 7 "clone-depuis-bare/ est sur la branche 'main'" \
 check_step 8 "clone-depuis-bare/ a une remote nommee 'origin'" \
     'assert_remote_name "$WORKDIR/clone-depuis-bare" "origin"'
 
+show_section "Depot source lie au bare"
+
+# ---- Step 9 : mon-archive/ a une remote nommee 'origin' ----
+# This is the pedagogical action taught in the quest body: inside
+# mon-archive, the student must 'git remote add origin ../archive-centrale.git'
+# and 'git push origin main'. Before the rigor sweep, this action was
+# completely untested because the verifier only looked at ma-copie
+# (whose remote comes from the automatic clone, not the taught step).
+check_step 9 "mon-archive/ a une remote nommee 'origin'" \
+    'assert_remote_name "$WORKDIR/mon-archive" "origin"'
+
 show_section "Coherence inter-depots"
 
-# ---- Step 9 : Les trois depots partagent le meme HEAD ----
-check_step 9 "Les trois depots partagent le meme HEAD" \
-    'assert_same_head "$WORKDIR/ma-copie" "$WORKDIR/clone-depuis-bare"'
+# ---- Step 10 : Les trois depots partagent le meme HEAD ----
+check_step 10 "Les trois depots partagent le meme HEAD" \
+    'assert_same_head "$WORKDIR/mon-archive" "$WORKDIR/ma-copie" "$WORKDIR/clone-depuis-bare"'
 
 show_score
