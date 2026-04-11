@@ -191,6 +191,16 @@ git config --global user.email</code></pre>
 
         <p>These commands should display your name and email respectively.</p>
 
+        <h3>Configure your default branch</h3>
+
+        <p>Since 2020, the modern convention is to call the main branch <code>main</code> instead of the historical <code>master</code>. Configure this preference globally so that all your future <span class="git-cmd">git init</span> commands automatically create a <code>main</code> branch:</p>
+
+        <pre data-lang="bash"><code>git config --global init.defaultBranch main</code></pre>
+
+        <div class="tip">
+          <p>This configuration is <strong>important for the upcoming quests</strong>. Without it, some instructions that assume a <code>main</code> branch will fail on your first <span class="git-cmd">git init</span>.</p>
+        </div>
+
         <h3>Per-project configuration</h3>
 
         <p>You might want to use a <strong>nickname</strong> on your personal online projects, but your <strong>real name</strong> (or a trigram) on your professional projects. Git allows this thanks to the <span class="git-cmd">--local</span> option, which overrides the global configuration <strong>only for the current repository</strong>:</p>
@@ -235,15 +245,16 @@ git config --local user.email "jsmith@company.com"</code></pre>
 
         <pre data-lang="powershell"><code>.\verifier.ps1</code></pre>
 
-        <p>The script checks three things:</p>
+        <p>The script checks four things:</p>
 
         <ol class="steps">
           <li>Git is <span class="highlight">installed</span> on your machine</li>
           <li>Your <span class="keyword">name</span> is configured (<span class="git-cmd">user.name</span>)</li>
           <li>Your <span class="keyword">email</span> is configured (<span class="git-cmd">user.email</span>)</li>
+          <li>Your <span class="keyword">default branch</span> is <code>main</code> (<span class="git-cmd">init.defaultBranch</span>)</li>
         </ol>
 
-        <p>If all three steps pass, congratulations! You are officially a member of the Archivists' Guild. The next quest awaits.</p>
+        <p>If all four steps pass, congratulations! You are officially a member of the Archivists' Guild. The next quest awaits.</p>
       </section>
 
       <div class="fancy-separator"></div>
