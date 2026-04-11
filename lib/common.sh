@@ -279,3 +279,70 @@ check_in_repo() {
         return 1
     fi
 }
+
+# -----------------------------------------------------------------------------
+# Predicate helpers for rigor-focused verifier checks
+#
+# These helpers are silent (no output, return 0 or 1). They are designed to
+# be called from inside check_step's test_command string, so the verifier's
+# output stays uniform (handled by check_step itself).
+#
+# Usage from a verifier:
+#   check_step 2 "ma-copie/ a une remote nommee 'origin'" \
+#       'assert_remote_name "$WORKDIR/ma-copie" "origin"'
+# -----------------------------------------------------------------------------
+
+# Returns 0 if <repo> has a remote named exactly <expected_name>.
+# Returns 1 if the path is not a git repo or the remote is missing.
+assert_remote_name() {
+    local repo="$1"
+    local expected="$2"
+    [ -d "$repo/.git" ] || return 1
+    git -C "$repo" remote 2>/dev/null | grep -qx -- "$expected"
+}
+
+# Returns 0 if <repo> is currently on branch <expected>.
+# Returns 1 if HEAD is detached, branch differs, or path is not a repo.
+assert_branch_is() {
+    local repo="$1"
+    local expected="$2"
+    local actual
+    actual="$(git -C "$repo" symbolic-ref --short HEAD 2>/dev/null)" || return 1
+    [ "$actual" = "$expected" ]
+}
+
+# Returns 0 if <file> exists AND its content matches the extended regex
+# <pattern>. Returns 1 otherwise.
+assert_file_contains() {
+    local file="$1"
+    local pattern="$2"
+    [ -f "$file" ] && grep -qE -- "$pattern" "$file"
+}
+
+# Returns 0 if all <repo_paths> share the same HEAD commit SHA.
+# Returns 1 if any path is not a repo, or if any HEAD differs from the first.
+assert_same_head() {
+    local first=""
+    local repo
+    for repo in "$@"; do
+        local sha
+        sha="$(git -C "$repo" rev-parse HEAD 2>/dev/null)" || return 1
+        if [ -z "$first" ]; then
+            first="$sha"
+        elif [ "$sha" != "$first" ]; then
+            return 1
+        fi
+    done
+}
+
+# -----------------------------------------------------------------------------
+# show_section <title>
+#
+# Prints a small underlined cyan section header. Cosmetic only, does not
+# affect SCORE/TOTAL. Use to group related check_step calls in a verifier.
+# -----------------------------------------------------------------------------
+show_section() {
+    local title="$1"
+    printf "\n  %s-- %s --%s\n" \
+        "${CLR_CYAN}${CLR_BOLD}" "$title" "${CLR_RESET}"
+}

@@ -136,7 +136,7 @@ ifeq ($(BATS),)
 	@exit 1
 else
 	@echo "▶ Running bats tests…"
-	bats $(TESTS_DIR)
+	bats $(TESTS_DIR) tests/lib
 endif
 
 .PHONY: test-pester
