@@ -61,3 +61,32 @@ EOF
   [[ "$output" != *"5 / 5"* ]]
   [[ "$output" == *"matrix"* ]]
 }
+
+@test "quest 17: fails when workflow has bare 'name:' lines but zero indented steps" {
+  mkdir -p "$TMP_DIR/work/.github/workflows"
+  cd "$TMP_DIR/work"
+  git init -q
+  cat > .github/workflows/ci.yml <<'YAML'
+name: Fake Workflow
+on: push
+jobs:
+  fake:
+    runs-on: ubuntu-latest
+    name: fake-job
+    strategy:
+      matrix:
+        os: [ubuntu, macos]
+YAML
+  cat > test-script.sh <<'SH'
+#!/usr/bin/env bash
+echo ok
+SH
+  chmod +x test-script.sh
+  git add . && git commit -q -m "fake workflow"
+  cd - >/dev/null
+
+  run run_verifier "$QUEST" "work"
+  # Step 4 (multiple steps) should fail because the workflow has zero
+  # indented '- name:' entries even though it has 2 bare 'name:' lines.
+  [[ "$output" != *"5 / 5"* ]]
+}
