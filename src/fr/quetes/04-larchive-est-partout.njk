@@ -99,16 +99,16 @@ git init --bare ./archive-centrale.git
 
 # Ajouter comme remote et pousser
 cd mon-archive
-git remote add origine ../archive-centrale.git
-git push origine main</code></pre>
+git remote add origin ../archive-centrale.git
+git push origin main</code></pre>
 
       <pre data-lang="powershell"><code># Créer un bare repo
 git init --bare .\archive-centrale.git
 
 # Ajouter comme remote et pousser
 cd mon-archive
-git remote add origine ..\archive-centrale.git
-git push origine main</code></pre>
+git remote add origin ..\archive-centrale.git
+git push origin main</code></pre>
 
       <p>C'est <strong>exactement</strong> ce que fait un serveur Git. Quand tu fais <span class="git-cmd">git push</span> vers GitHub, tu envoies tes commits vers un <span class="keyword">bare repo</span> hébergé sur leurs serveurs. Rien de magique.</p>
 
@@ -247,8 +247,8 @@ git init --bare ./archive-centrale.git
 
 # 3. Ajouter la remote et pousser
 cd mon-archive
-git remote add origine ../archive-centrale.git
-git push origine main
+git remote add origin ../archive-centrale.git
+git push origin main
 cd ..
 
 # 4. Clone depuis le bare repo
