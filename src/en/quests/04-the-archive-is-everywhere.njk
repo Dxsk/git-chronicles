@@ -95,7 +95,7 @@ git log --oneline</code></pre>
       <p>A <strong><span class="keyword">bare repo</span></strong> is a repo that contains <strong>only</strong> the contents of <span class="keyword"><code>.git/</code></span> - no working files. It's the format used by <strong>Git servers</strong>.</p>
 
       <pre data-lang="bash"><code># Create a bare repo
-git init --bare ./archive-centrale.git
+git init -b main --bare ./archive-centrale.git
 
 # Add as remote and push
 cd mon-archive
@@ -103,7 +103,7 @@ git remote add origin ../archive-centrale.git
 git push origin main</code></pre>
 
       <pre data-lang="powershell"><code># Create a bare repo
-git init --bare .\archive-centrale.git
+git init -b main --bare .\archive-centrale.git
 
 # Add as remote and push
 cd mon-archive
@@ -231,7 +231,7 @@ git push origin main</code></pre>
       <p>You need the <code>mon-archive/</code> repo from quest 03. If you don't have it:</p>
 
       <pre data-lang="bash"><code>mkdir mon-archive && cd mon-archive
-git init
+git init -b main
 echo "Welcome to the Archive" > README.md
 git add README.md
 git commit -m "First parchment"
@@ -243,7 +243,7 @@ cd ..</code></pre>
 git clone ./mon-archive ./ma-copie
 
 # 2. Bare repo
-git init --bare ./archive-centrale.git
+git init -b main --bare ./archive-centrale.git
 
 # 3. Add the remote and push
 cd mon-archive

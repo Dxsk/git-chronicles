@@ -95,7 +95,7 @@ git log --oneline</code></pre>
       <p>Un <strong><span class="keyword">bare repo</span></strong> est un repo qui contient <strong>uniquement</strong> le contenu de <span class="keyword"><code>.git/</code></span> - pas de fichiers de travail. C'est le format utilisé par les <strong>serveurs Git</strong>.</p>
 
       <pre data-lang="bash"><code># Créer un bare repo
-git init --bare ./archive-centrale.git
+git init -b main --bare ./archive-centrale.git
 
 # Ajouter comme remote et pousser
 cd mon-archive
@@ -103,7 +103,7 @@ git remote add origin ../archive-centrale.git
 git push origin main</code></pre>
 
       <pre data-lang="powershell"><code># Créer un bare repo
-git init --bare .\archive-centrale.git
+git init -b main --bare .\archive-centrale.git
 
 # Ajouter comme remote et pousser
 cd mon-archive
@@ -231,7 +231,7 @@ git push origin main</code></pre>
       <p>Tu as besoin du repo <code>mon-archive/</code> de la quête 03. Si tu ne l'as pas :</p>
 
       <pre data-lang="bash"><code>mkdir mon-archive && cd mon-archive
-git init
+git init -b main
 echo "Bienvenue dans l'Archive" > README.md
 git add README.md
 git commit -m "Premier parchemin"
@@ -243,7 +243,7 @@ cd ..</code></pre>
 git clone ./mon-archive ./ma-copie
 
 # 2. Bare repo
-git init --bare ./archive-centrale.git
+git init -b main --bare ./archive-centrale.git
 
 # 3. Ajouter la remote et pousser
 cd mon-archive

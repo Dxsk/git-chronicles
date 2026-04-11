@@ -380,7 +380,7 @@ cat ~/.ssh/id_ed25519.pub</code></pre>
 
     <pre data-lang="bash"><code>mkdir chroniques-forge
 cd chroniques-forge
-git init</code></pre>
+git init -b main</code></pre>
 
     <h3>Étape 2 - Écrire le premier parchemin</h3>
 
@@ -430,7 +430,7 @@ git commit -m "Ajouter les notes sur les forges et le pipeline CI/CD"</code></pr
     <h3>Étape 4 - Créer la Forge (dépôt bare)</h3>
 
     <pre data-lang="bash"><code>cd ..
-git init --bare forge-eternelle.git</code></pre>
+git init -b main --bare forge-eternelle.git</code></pre>
 
     <div class="tip">
       <p>Un <strong>dépôt bare</strong> est un dépôt Git sans répertoire de travail - exactement comme un serveur GitHub ou GitLab. Il ne contient que les données Git, pas les fichiers de travail.</p>
