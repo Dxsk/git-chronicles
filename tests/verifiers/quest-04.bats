@@ -32,14 +32,14 @@ build_pass_scenario() {
 @test "quest 04: verifier passes with full remote + clone + bare setup" {
   build_pass_scenario
   run run_verifier "$QUEST" "work"
-  [[ "$output" == *"4 / 4"* ]]
+  [[ "$output" == *"8 / 8"* ]]
 }
 
 @test "quest 04: fails when ma-copie/ is missing" {
   build_pass_scenario
   rm -rf "$TMP_DIR/work/ma-copie"
   run run_verifier "$QUEST" "work"
-  [[ "$output" != *"4 / 4"* ]]
+  [[ "$output" != *"8 / 8"* ]]
   [[ "$output" == *"ma-copie"* ]]
 }
 
@@ -47,6 +47,53 @@ build_pass_scenario() {
   build_pass_scenario
   rm -rf "$TMP_DIR/work/archive-centrale.git"
   run run_verifier "$QUEST" "work"
-  [[ "$output" != *"4 / 4"* ]]
+  [[ "$output" != *"8 / 8"* ]]
   [[ "$output" == *"bare"* ]]
+}
+
+@test "quest 04: fails when ma-copie has remote named 'origine' instead of 'origin'" {
+  build_pass_scenario
+  cd "$TMP_DIR/work/ma-copie"
+  git remote rename origin origine
+  cd - >/dev/null
+  run run_verifier "$QUEST" "work"
+  [[ "$output" != *"8 / 8"* ]]
+  [[ "$output" == *"origin"* ]]
+}
+
+@test "quest 04: fails when ma-copie is on branch master instead of main" {
+  build_pass_scenario
+  cd "$TMP_DIR/work/ma-copie"
+  git branch -m main master
+  cd - >/dev/null
+  run run_verifier "$QUEST" "work"
+  [[ "$output" != *"8 / 8"* ]]
+  [[ "$output" == *"main"* ]]
+}
+
+@test "quest 04: fails when bare repo HEAD points to nonexistent master" {
+  build_pass_scenario
+  echo "ref: refs/heads/master" > "$TMP_DIR/work/archive-centrale.git/HEAD"
+  run run_verifier "$QUEST" "work"
+  [[ "$output" != *"8 / 8"* ]]
+}
+
+@test "quest 04: fails when clone-depuis-bare is on branch master" {
+  build_pass_scenario
+  cd "$TMP_DIR/work/clone-depuis-bare"
+  git branch -m main master
+  cd - >/dev/null
+  run run_verifier "$QUEST" "work"
+  [[ "$output" != *"8 / 8"* ]]
+}
+
+@test "quest 04: fails when ma-copie and clone-depuis-bare HEADs diverge" {
+  build_pass_scenario
+  cd "$TMP_DIR/work/ma-copie"
+  echo "extra" > extra.txt
+  git add extra.txt
+  git commit -q -m "Diverging commit"
+  cd - >/dev/null
+  run run_verifier "$QUEST" "work"
+  [[ "$output" != *"8 / 8"* ]]
 }
