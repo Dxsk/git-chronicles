@@ -51,3 +51,16 @@ EOF
   [[ "$output" != *"5 / 5"* ]]
   [[ "$output" == *"TODO"* ]]
 }
+
+@test "quest 14: fails when pre-commit only mentions TODO in a comment (no failure path)" {
+  build_pass_scenario
+  cat > "$TMP_DIR/work/.git/hooks/pre-commit" <<'EOF'
+#!/usr/bin/env bash
+# This hook is supposed to block TODO markers.
+exit 0
+EOF
+  chmod +x "$TMP_DIR/work/.git/hooks/pre-commit"
+  run run_verifier "$QUEST" "work"
+  [[ "$output" != *"5 / 5"* ]]
+  [[ "$output" == *"TODO"* ]]
+}
