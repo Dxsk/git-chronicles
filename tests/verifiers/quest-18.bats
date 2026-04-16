@@ -49,3 +49,29 @@ EOF
   [[ "$output" != *"4 / 4"* ]]
   [[ "$output" == *"tag"* ]]
 }
+
+@test "quest 18: fails when deploy/production are only mentioned in comments" {
+  mkdir -p "$TMP_DIR/work/.github/workflows"
+  cd "$TMP_DIR/work"
+  git init -q
+  cat > .github/workflows/deploy.yml <<'EOF'
+# This workflow will one day deploy to production.
+name: Lint
+on:
+  push:
+    branches: [main]
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "lint only, nothing real"
+EOF
+  git add .
+  git commit -q -m "Add placeholder workflow"
+  git tag v1.0.0
+  cd - >/dev/null
+
+  run run_verifier "$QUEST" "work"
+  [[ "$output" != *"4 / 4"* ]]
+  [[ "$output" == *"déploiement"* ]]
+}
