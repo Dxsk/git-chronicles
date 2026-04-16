@@ -31,8 +31,10 @@ check_step 2 "Au moins 2 tags existent" \
 check_step 3 "Au moins un tag annoté existe" \
     'found=false; for t in $(git tag); do if [ "$(git cat-file -t "$t" 2>/dev/null)" = "tag" ]; then found=true; break; fi; done; $found'
 
-# ---- Step 4 : Les tags suivent le format de versionnage (v*) ----
-check_step 4 "Les tags suivent le format de versionnage (v*)" \
-    'git tag | grep -qE "^v[0-9]+\.[0-9]+\.[0-9]+$"'
+# ---- Step 4 : Tous les tags suivent le format de versionnage (vX.Y.Z) ----
+# Require every tag to match semver, not just one - a student mixing
+# semver tags with garbage ones (e.g. release-notes) should not pass.
+check_step 4 "Tous les tags suivent le format de versionnage (vX.Y.Z)" \
+    '[ "$(git tag | wc -l)" -gt 0 ] && ! git tag | grep -qvE "^v[0-9]+\.[0-9]+\.[0-9]+$"'
 
 show_score
