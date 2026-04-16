@@ -18,18 +18,36 @@ QUEST="11-le-tisseur-de-temps"
   echo "c" > c.txt && git add c.txt && git commit -q -m "C"
 
   git checkout -q -b travail
-  # Trigger a real stash so refs/stash exists in the reflog. We don't pop it,
-  # because `git stash pop` removes refs/stash once the stash stack is empty
-  # and the verifier's step 3 needs a reflog entry on that ref.
   echo "wip" >> a.txt
   git stash push -q -m "Travail en cours"
+  git stash pop -q
+  git checkout -q main
 
   cd - >/dev/null
   run run_verifier "$QUEST" "work"
-  [[ "$output" == *"4 / 4"* ]]
+  [[ "$output" == *"5 / 5"* ]]
 }
 
-@test "quest 11: fails without any stash activity" {
+@test "quest 11: fails when a stash is still pending (never popped/applied)" {
+  mkdir -p "$TMP_DIR/work"
+  cd "$TMP_DIR/work"
+  git init -q
+  echo "a" > a.txt && git add a.txt && git commit -q -m "A"
+  echo "b" > b.txt && git add b.txt && git commit -q -m "B"
+  echo "c" > c.txt && git add c.txt && git commit -q -m "C"
+
+  git checkout -q -b travail
+  echo "wip" >> a.txt
+  git stash push -q -m "Travail en cours"
+  # Deliberately do NOT pop, so the stash stack stays non-empty.
+  git checkout -q main
+
+  cd - >/dev/null
+  run run_verifier "$QUEST" "work"
+  [[ "$output" != *"5 / 5"* ]]
+}
+
+@test "quest 11: fails when the student is left on the work branch" {
   mkdir -p "$TMP_DIR/work"
   cd "$TMP_DIR/work"
   git init -q
@@ -37,9 +55,13 @@ QUEST="11-le-tisseur-de-temps"
   echo "b" > b.txt && git add b.txt && git commit -q -m "B"
   echo "c" > c.txt && git add c.txt && git commit -q -m "C"
   git checkout -q -b travail
+  echo "wip" >> a.txt
+  git stash push -q -m "Travail en cours"
+  git stash pop -q
+  # Student forgets to switch back to main.
   cd - >/dev/null
 
   run run_verifier "$QUEST" "work"
-  [[ "$output" != *"4 / 4"* ]]
-  [[ "$output" == *"stash"* ]]
+  [[ "$output" != *"5 / 5"* ]]
+  [[ "$output" == *"main"* ]]
 }
