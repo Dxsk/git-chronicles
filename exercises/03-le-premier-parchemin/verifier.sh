@@ -45,4 +45,8 @@ check_step 4 "Ton premier commit a un message personnalisé" \
         && [ "$premier_msg" != "init" ]
     '
 
+# --- Step 5 : mission.txt a été modifié depuis le parchemin fourni ---
+check_step 5 "Tu as complété le parchemin (mission.txt diffère du modèle fourni)" \
+    '! cmp -s mission.txt "$SCRIPT_DIR/parchemins/mission.txt"'
+
 show_score
