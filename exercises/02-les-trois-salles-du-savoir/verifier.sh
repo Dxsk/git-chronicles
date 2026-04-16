@@ -28,16 +28,16 @@ check_step 1 \
     "git rev-parse --is-inside-work-tree" \
     || true
 
-# ── Step 2 : Le fichier parchemin.txt existe ───────────────────────────────
+# ── Step 2 : Le fichier parchemin.txt existe et contient du texte ──────────
 check_step 2 \
     "Le fichier parchemin.txt existe dans la Salle de Travail" \
-    "test -f parchemin.txt" \
+    "test -s parchemin.txt" \
     || true
 
 # ── Step 3 : parchemin.txt est dans le staging area ────────────────────────
 check_step 3 \
     "parchemin.txt est dans la Salle de Préparation (staging area)" \
-    "git diff --cached --name-only | grep -q parchemin.txt" \
+    "git diff --cached --name-only | grep -qFx parchemin.txt" \
     || true
 
 # ── Step 4 : Pas encore de commit (pas de HEAD valide) ─────────────────────
