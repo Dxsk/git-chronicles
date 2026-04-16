@@ -46,3 +46,27 @@ QUEST="02-les-trois-salles-du-savoir"
   [[ "$output" != *"4 / 4"* ]]
   [[ "$output" == *"pas de commit"* ]]
 }
+
+@test "quest 02: fails when parchemin.txt is empty (zero bytes)" {
+  mkdir -p "$TMP_DIR/work"
+  cd "$TMP_DIR/work"
+  git init -q
+  : > parchemin.txt
+  git add parchemin.txt
+  cd - >/dev/null
+
+  run run_verifier "$QUEST" "work"
+  [[ "$output" != *"4 / 4"* ]]
+}
+
+@test "quest 02: fails when staged file is named mon-parchemin.txt instead of parchemin.txt" {
+  mkdir -p "$TMP_DIR/work"
+  cd "$TMP_DIR/work"
+  git init -q
+  echo "contenu du parchemin" > mon-parchemin.txt
+  git add mon-parchemin.txt
+  cd - >/dev/null
+
+  run run_verifier "$QUEST" "work"
+  [[ "$output" == *"2 / 4"* ]]
+}

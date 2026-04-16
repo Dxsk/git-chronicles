@@ -191,6 +191,16 @@ git config --global user.email</code></pre>
 
         <p>Ces commandes doivent afficher respectivement ton nom et ton email.</p>
 
+        <h3>Configurer la branche par défaut</h3>
+
+        <p>Depuis 2020, la convention moderne est d'appeler la branche principale <code>main</code> au lieu de l'historique <code>master</code>. Configure cette préférence globalement pour que tous tes futurs <span class="git-cmd">git init</span> créent automatiquement une branche <code>main</code> :</p>
+
+        <pre data-lang="bash"><code>git config --global init.defaultBranch main</code></pre>
+
+        <div class="tip">
+          <p>Cette configuration est <strong>importante pour les quêtes suivantes</strong>. Sans elle, certaines instructions qui supposent une branche <code>main</code> échoueront sur ton premier <span class="git-cmd">git init</span>.</p>
+        </div>
+
         <h3>Configuration par projet</h3>
 
         <p>Tu peux vouloir utiliser un <strong>pseudo</strong> sur tes projets personnels en ligne, mais ton <strong>vrai nom</strong> (ou un trigramme) sur tes projets professionnels. Git le permet grâce à l'option <span class="git-cmd">--local</span>, qui remplace la configuration globale <strong>uniquement pour le dépôt en cours</strong> :</p>
@@ -235,15 +245,16 @@ git config --local user.email "jdupont@entreprise.com"</code></pre>
 
         <pre data-lang="powershell"><code>.\verifier.ps1</code></pre>
 
-        <p>Le script vérifie trois choses :</p>
+        <p>Le script vérifie quatre choses :</p>
 
         <ol class="steps">
           <li>Git est <span class="highlight">installé</span> sur ta machine</li>
           <li>Ton <span class="keyword">nom</span> est configuré (<span class="git-cmd">user.name</span>)</li>
           <li>Ton <span class="keyword">email</span> est configuré (<span class="git-cmd">user.email</span>)</li>
+          <li>Ta <span class="keyword">branche par défaut</span> est <code>main</code> (<span class="git-cmd">init.defaultBranch</span>)</li>
         </ol>
 
-        <p>Si les trois étapes sont validées, félicitations ! Tu es officiellement membre de la Guilde des Archivistes. La prochaine quête t'attend.</p>
+        <p>Si les quatre étapes sont validées, félicitations ! Tu es officiellement membre de la Guilde des Archivistes. La prochaine quête t'attend.</p>
       </section>
 
       <div class="fancy-separator"></div>

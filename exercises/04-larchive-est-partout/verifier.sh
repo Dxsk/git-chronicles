@@ -32,25 +32,62 @@ WORKDIR="$(cd "$WORKDIR" 2>/dev/null && pwd)" || {
 
 printf "  %sDossier analyse : %s%s\n\n" "${CLR_CYAN}" "$WORKDIR" "${CLR_RESET}"
 
+show_section "Setup des depots"
+
 # ---- Step 1 : ma-copie/ existe et c'est un repo git ----
 check_step 1 "ma-copie/ existe et c'est un repo Git" \
     '[ -d "$WORKDIR/ma-copie/.git" ]'
 
-# ---- Step 2 : ma-copie a une remote origin pointant vers un chemin local ----
-check_step 2 "ma-copie/ a une remote origin vers un chemin local" \
-    'grep -q "url = " "$WORKDIR/ma-copie/.git/config" 2>/dev/null && \
-     ! grep "url = http" "$WORKDIR/ma-copie/.git/config" >/dev/null 2>&1 && \
-     ! grep "url = git@" "$WORKDIR/ma-copie/.git/config" >/dev/null 2>&1'
+# ---- Step 2 : ma-copie/ a une remote nommee 'origin' ----
+check_step 2 "ma-copie/ a une remote nommee 'origin'" \
+    'assert_remote_name "$WORKDIR/ma-copie" "origin"'
 
-# ---- Step 3 : archive-centrale.git/ est un bare repo ----
-check_step 3 "archive-centrale.git/ existe et c'est un bare repo" \
+# ---- Step 3 : ma-copie/ est sur la branche 'main' ----
+check_step 3 "ma-copie/ est sur la branche 'main'" \
+    'assert_branch_is "$WORKDIR/ma-copie" "main"'
+
+show_section "Depot central (bare)"
+
+# ---- Step 4 : archive-centrale.git/ est un bare repo ----
+check_step 4 "archive-centrale.git/ existe et c'est un bare repo" \
     '[ -f "$WORKDIR/archive-centrale.git/HEAD" ] && \
      [ -d "$WORKDIR/archive-centrale.git/objects" ] && \
      [ -d "$WORKDIR/archive-centrale.git/refs" ] && \
      ! [ -d "$WORKDIR/archive-centrale.git/.git" ]'
 
-# ---- Step 4 : clone-depuis-bare/ existe et c'est un repo git ----
-check_step 4 "clone-depuis-bare/ existe et c'est un repo Git" \
+# ---- Step 5 : archive-centrale.git/HEAD pointe vers main ----
+check_step 5 "archive-centrale.git/ pointe HEAD vers main" \
+    '[ "$(cat "$WORKDIR/archive-centrale.git/HEAD" 2>/dev/null)" = "ref: refs/heads/main" ]'
+
+show_section "Clone depuis le bare"
+
+# ---- Step 6 : clone-depuis-bare/ existe et c'est un repo git ----
+check_step 6 "clone-depuis-bare/ existe et c'est un repo Git" \
     '[ -d "$WORKDIR/clone-depuis-bare/.git" ]'
+
+# ---- Step 7 : clone-depuis-bare/ est sur la branche 'main' ----
+check_step 7 "clone-depuis-bare/ est sur la branche 'main'" \
+    'assert_branch_is "$WORKDIR/clone-depuis-bare" "main"'
+
+# ---- Step 8 : clone-depuis-bare/ a une remote nommee 'origin' ----
+check_step 8 "clone-depuis-bare/ a une remote nommee 'origin'" \
+    'assert_remote_name "$WORKDIR/clone-depuis-bare" "origin"'
+
+show_section "Depot source lie au bare"
+
+# ---- Step 9 : mon-archive/ a une remote nommee 'origin' ----
+# This is the pedagogical action taught in the quest body: inside
+# mon-archive, the student must 'git remote add origin ../archive-centrale.git'
+# and 'git push origin main'. Before the rigor sweep, this action was
+# completely untested because the verifier only looked at ma-copie
+# (whose remote comes from the automatic clone, not the taught step).
+check_step 9 "mon-archive/ a une remote nommee 'origin'" \
+    'assert_remote_name "$WORKDIR/mon-archive" "origin"'
+
+show_section "Coherence inter-depots"
+
+# ---- Step 10 : Les trois depots partagent le meme HEAD ----
+check_step 10 "Les trois depots partagent le meme HEAD" \
+    'assert_same_head "$WORKDIR/mon-archive" "$WORKDIR/ma-copie" "$WORKDIR/clone-depuis-bare"'
 
 show_score

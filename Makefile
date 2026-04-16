@@ -67,11 +67,15 @@ package: ## Build release zip locally (same output as CI)
 # -----------------------------------------------------------------------------
 
 .PHONY: lint
-lint: lint-spell lint-i18n lint-nav lint-links lint-a11y lint-shell lint-ci lint-powershell ## Run all linters
+lint: lint-spell lint-content lint-i18n lint-nav lint-links lint-a11y lint-shell lint-ci lint-powershell ## Run all linters
 
 .PHONY: lint-spell
 lint-spell: ## Run cspell on FR + EN content
 	npm run spell
+
+.PHONY: lint-content
+lint-content: ## Check content for forbidden git command patterns (regression prevention)
+	@scripts/makefile/run-lint-content.sh
 
 .PHONY: lint-i18n
 lint-i18n: ## Check FR/EN page parity
@@ -136,7 +140,7 @@ ifeq ($(BATS),)
 	@exit 1
 else
 	@echo "▶ Running bats tests…"
-	bats $(TESTS_DIR)
+	bats $(TESTS_DIR) tests/lib
 endif
 
 .PHONY: test-pester

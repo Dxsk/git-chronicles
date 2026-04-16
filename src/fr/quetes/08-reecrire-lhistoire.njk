@@ -85,7 +85,7 @@ A---B---E---F  (main)</code></pre>
         <h3>Comment faire un rebase</h3>
 
         <pre data-lang="bash"><code># Se placer sur la branche à rebaser
-git checkout feature
+git switch feature
 
 # Rebaser sur main
 git rebase main</code></pre>
@@ -103,7 +103,7 @@ git rebase main</code></pre>
 
         <h3>Merge (fusion)</h3>
 
-        <pre data-lang="bash"><code>git checkout main
+        <pre data-lang="bash"><code>git switch main
 git merge feature</code></pre>
 
         <pre><code>      C---D  (feature)
@@ -118,7 +118,7 @@ A---B---E---F---G  (main, commit de merge)</code></pre>
 
         <h3>Rebase</h3>
 
-        <pre data-lang="bash"><code>git checkout feature
+        <pre data-lang="bash"><code>git switch feature
 git rebase main</code></pre>
 
         <pre><code>              C'---D'  (feature)
@@ -291,7 +291,7 @@ git reset --hard &lt;hash-du-commit-perdu&gt;</code></pre>
 
         <pre data-lang="bash"><code>mkdir chroniques-nettoyees
 cd chroniques-nettoyees
-git init</code></pre>
+git init -b main</code></pre>
 
         <h3>Étape 2 - Consigner trois entrées (avec une erreur)</h3>
 
@@ -323,7 +323,7 @@ git commit -m "Ajoouter l'entrée du Jour 3"</code></pre>
 
         <p>Crée une branche <code>refonte-archives</code> et ajoute-y des entrées :</p>
 
-        <pre data-lang="bash"><code>git checkout -b refonte-archives
+        <pre data-lang="bash"><code>git switch -c refonte-archives
 
 echo "Jour 4 : Construction de la forteresse" >> registre.txt
 git add registre.txt
@@ -337,7 +337,7 @@ git commit -m "Ajouter l'entrée du Jour 5"</code></pre>
 
         <p>Retourne sur <code>main</code> et ajoute un commit :</p>
 
-        <pre data-lang="bash"><code>git checkout main
+        <pre data-lang="bash"><code>git switch main
 
 echo "Annexe : Liste des rois" >> annexes.txt
 git add annexes.txt
@@ -347,7 +347,7 @@ git commit -m "Ajouter la liste des rois en annexe"</code></pre>
 
         <p>Rebase <code>refonte-archives</code> sur <code>main</code> pour obtenir un historique linéaire :</p>
 
-        <pre data-lang="bash"><code>git checkout refonte-archives
+        <pre data-lang="bash"><code>git switch refonte-archives
 git rebase main</code></pre>
 
         <h3>Étape 7 - Vérifier le résultat</h3>

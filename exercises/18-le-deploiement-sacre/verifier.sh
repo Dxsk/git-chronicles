@@ -27,9 +27,15 @@ check_step 1 "Tu es dans un dépôt Git" \
 check_step 2 "Un dossier .github/workflows existe avec un workflow" \
     'ls .github/workflows/*.yml .github/workflows/*.yaml 2>/dev/null | grep -q .'
 
-# ---- Step 3 : Le workflow mentionne le déploiement (production ou deploy) ----
+# ---- Step 3 : Le workflow mentionne le déploiement hors commentaires ----
+# Strip comment-only lines before matching so a placeholder workflow
+# with "# TODO: deploy to production" at the top does not pass.
 check_step 3 "Le workflow mentionne le déploiement (production ou deploy)" \
-    'grep -rqlE "production|deploy" .github/workflows/ 2>/dev/null'
+    '
+    find .github/workflows -type f \( -name "*.yml" -o -name "*.yaml" \) \
+        -exec grep -hvE "^[[:space:]]*#" {} + 2>/dev/null \
+        | grep -qE "(deploy|production)"
+    '
 
 # ---- Step 4 : Au moins un tag existe ----
 check_step 4 "Au moins un tag de version existe" \

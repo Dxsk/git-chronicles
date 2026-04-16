@@ -23,9 +23,9 @@ show_banner "$QUEST_TITLE"
 check_step 1 "Tu es dans un dépôt Git" \
     'git rev-parse --is-inside-work-tree'
 
-# ---- Step 2 : Au moins un remote est configuré ----
-check_step 2 "Au moins un remote est configuré" \
-    'git remote 2>/dev/null | grep -q .'
+# ---- Step 2 : Un remote nommé 'origin' est configuré ----
+check_step 2 "Un remote nommé 'origin' est configuré" \
+    'assert_remote_name . origin'
 
 # ---- Step 3 : Au moins un push a été effectué ----
 check_step 3 "Au moins un push a été effectué (des refs distantes existent)" \
@@ -34,5 +34,9 @@ check_step 3 "Au moins un push a été effectué (des refs distantes existent)" 
 # ---- Step 4 : Au moins 3 commits dans le dépôt ----
 check_step 4 "Le dépôt contient au moins 3 commits" \
     '[ "$(git rev-list --count HEAD 2>/dev/null)" -ge 3 ]'
+
+# ---- Step 5 : Le dépôt local est sur la branche main ----
+check_step 5 "Tu es sur la branche main" \
+    'assert_branch_is . main'
 
 show_score

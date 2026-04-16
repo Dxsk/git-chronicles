@@ -31,9 +31,14 @@ check_step 2 "Le dossier .github/workflows existe" \
 check_step 3 "Un workflow contient une stratégie de matrice (matrix)" \
     'grep -rl "matrix:" .github/workflows/*.yml .github/workflows/*.yaml 2>/dev/null | grep -q .'
 
-# ---- Step 4 : Le workflow contient plusieurs étapes (steps) ----
+# ---- Step 4 : Le workflow contient plusieurs etapes (steps) ----
+# Counts indented "- name:" entries which is the conventional YAML form for
+# step entries under "steps:". This avoids the false-positive of the previous
+# implementation which counted bare "name:" lines (workflow name, job name).
 check_step 4 "Le workflow contient plusieurs étapes (steps)" \
-    'fichier=$(ls .github/workflows/*.yml .github/workflows/*.yaml 2>/dev/null | head -1) && [ -n "$fichier" ] && [ "$(grep -c "name:" "$fichier")" -ge 2 ]'
+    'fichier=$(ls .github/workflows/*.yml .github/workflows/*.yaml 2>/dev/null | head -1) \
+        && [ -n "$fichier" ] \
+        && [ "$(grep -cE "^[[:space:]]+- name:" "$fichier")" -ge 2 ]'
 
 # ---- Step 5 : Au moins un script de test existe ----
 check_step 5 "Au moins un script de test existe" \

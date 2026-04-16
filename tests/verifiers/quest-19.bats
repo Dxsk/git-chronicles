@@ -61,3 +61,24 @@ EOF
   [[ "$output" != *"6 / 6"* ]]
   [[ "$output" == *"gitlab-ci"* ]]
 }
+
+@test "quest 19: fails when .github/workflows/ci.yml is empty" {
+  build_pass_scenario
+  : > "$TMP_DIR/work/.github/workflows/ci.yml"
+  run run_verifier "$QUEST" "work"
+  [[ "$output" != *"6 / 6"* ]]
+}
+
+@test "quest 19: fails when .gitlab-ci.yml has no job definition" {
+  build_pass_scenario
+  echo "# GitLab CI placeholder" > "$TMP_DIR/work/.gitlab-ci.yml"
+  run run_verifier "$QUEST" "work"
+  [[ "$output" != *"6 / 6"* ]]
+}
+
+@test "quest 19: fails when bitbucket-pipelines.yml has no pipelines key" {
+  build_pass_scenario
+  echo "# Not a pipeline yet" > "$TMP_DIR/work/bitbucket-pipelines.yml"
+  run run_verifier "$QUEST" "work"
+  [[ "$output" != *"6 / 6"* ]]
+}

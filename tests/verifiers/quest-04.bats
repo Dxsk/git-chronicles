@@ -23,6 +23,11 @@ build_pass_scenario() {
   # archive-centrale.git is a bare repo.
   git clone -q --bare ./mon-archive ./archive-centrale.git
 
+  # The quest pedagogically teaches the student to link mon-archive to the
+  # bare repo and push main. Reproduce the same final state here so the
+  # verifier can validate that the 'git remote add' action was performed.
+  ( cd mon-archive && git remote add origin ../archive-centrale.git )
+
   # clone-depuis-bare/ is cloned from the bare repo.
   git clone -q ./archive-centrale.git ./clone-depuis-bare
 
@@ -32,14 +37,14 @@ build_pass_scenario() {
 @test "quest 04: verifier passes with full remote + clone + bare setup" {
   build_pass_scenario
   run run_verifier "$QUEST" "work"
-  [[ "$output" == *"4 / 4"* ]]
+  [[ "$output" == *"10 / 10"* ]]
 }
 
 @test "quest 04: fails when ma-copie/ is missing" {
   build_pass_scenario
   rm -rf "$TMP_DIR/work/ma-copie"
   run run_verifier "$QUEST" "work"
-  [[ "$output" != *"4 / 4"* ]]
+  [[ "$output" != *"10 / 10"* ]]
   [[ "$output" == *"ma-copie"* ]]
 }
 
@@ -47,6 +52,75 @@ build_pass_scenario() {
   build_pass_scenario
   rm -rf "$TMP_DIR/work/archive-centrale.git"
   run run_verifier "$QUEST" "work"
-  [[ "$output" != *"4 / 4"* ]]
+  [[ "$output" != *"10 / 10"* ]]
   [[ "$output" == *"bare"* ]]
+}
+
+@test "quest 04: fails when ma-copie has remote named 'origine' instead of 'origin'" {
+  build_pass_scenario
+  cd "$TMP_DIR/work/ma-copie"
+  git remote rename origin origine
+  cd - >/dev/null
+  run run_verifier "$QUEST" "work"
+  [[ "$output" != *"10 / 10"* ]]
+  [[ "$output" == *"origin"* ]]
+}
+
+@test "quest 04: fails when ma-copie is on branch master instead of main" {
+  build_pass_scenario
+  cd "$TMP_DIR/work/ma-copie"
+  git branch -m main master
+  cd - >/dev/null
+  run run_verifier "$QUEST" "work"
+  [[ "$output" != *"10 / 10"* ]]
+  [[ "$output" == *"main"* ]]
+}
+
+@test "quest 04: fails when bare repo HEAD points to nonexistent master" {
+  build_pass_scenario
+  echo "ref: refs/heads/master" > "$TMP_DIR/work/archive-centrale.git/HEAD"
+  run run_verifier "$QUEST" "work"
+  [[ "$output" != *"10 / 10"* ]]
+}
+
+@test "quest 04: fails when clone-depuis-bare is on branch master" {
+  build_pass_scenario
+  cd "$TMP_DIR/work/clone-depuis-bare"
+  git branch -m main master
+  cd - >/dev/null
+  run run_verifier "$QUEST" "work"
+  [[ "$output" != *"10 / 10"* ]]
+}
+
+@test "quest 04: fails when ma-copie and clone-depuis-bare HEADs diverge" {
+  build_pass_scenario
+  cd "$TMP_DIR/work/ma-copie"
+  echo "extra" > extra.txt
+  git add extra.txt
+  git commit -q -m "Diverging commit"
+  cd - >/dev/null
+  run run_verifier "$QUEST" "work"
+  [[ "$output" != *"10 / 10"* ]]
+}
+
+@test "quest 04: fails when clone-depuis-bare has remote named 'origine' instead of 'origin'" {
+  build_pass_scenario
+  cd "$TMP_DIR/work/clone-depuis-bare"
+  git remote rename origin origine
+  cd - >/dev/null
+  run run_verifier "$QUEST" "work"
+  [[ "$output" != *"10 / 10"* ]]
+  [[ "$output" == *"origin"* ]]
+}
+
+@test "quest 04: fails when mon-archive has no remote (skipped 'git remote add' step)" {
+  build_pass_scenario
+  # Undo the pedagogical action: simulate a student who never ran
+  # 'git remote add origin ../archive-centrale.git' on mon-archive.
+  cd "$TMP_DIR/work/mon-archive"
+  git remote remove origin
+  cd - >/dev/null
+  run run_verifier "$QUEST" "work"
+  [[ "$output" != *"10 / 10"* ]]
+  [[ "$output" == *"mon-archive"* ]]
 }

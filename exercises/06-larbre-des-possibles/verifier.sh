@@ -43,4 +43,8 @@ check_step 5 "La branche expedition-sud contient un commit propre" \
 check_step 6 "Il y a au moins 3 branches" \
     '[ "$(git branch | wc -l)" -ge 3 ]'
 
+# ---- Step 7 : De retour sur main ----
+check_step 7 "Tu es de retour sur la branche main" \
+    'assert_branch_is . main'
+
 show_score

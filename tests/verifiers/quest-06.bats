@@ -35,7 +35,7 @@ build_pass_scenario() {
 @test "quest 06: verifier passes with two expedition branches" {
   build_pass_scenario
   run run_verifier "$QUEST" "work"
-  [[ "$output" == *"6 / 6"* ]]
+  [[ "$output" == *"7 / 7"* ]]
 }
 
 @test "quest 06: fails when expedition-nord branch is missing" {
@@ -44,6 +44,16 @@ build_pass_scenario() {
   git branch -D expedition-nord
   cd - >/dev/null
   run run_verifier "$QUEST" "work"
-  [[ "$output" != *"6 / 6"* ]]
+  [[ "$output" != *"7 / 7"* ]]
   [[ "$output" == *"expedition-nord"* ]]
+}
+
+@test "quest 06: fails when the student is left on an expedition branch" {
+  build_pass_scenario
+  cd "$TMP_DIR/work"
+  git checkout -q expedition-nord
+  cd - >/dev/null
+  run run_verifier "$QUEST" "work"
+  [[ "$output" != *"7 / 7"* ]]
+  [[ "$output" == *"main"* ]]
 }

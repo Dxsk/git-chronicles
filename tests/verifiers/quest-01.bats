@@ -9,11 +9,11 @@ teardown() { tmp_teardown; }
 
 QUEST="01-la-guilde-des-archivistes"
 
-@test "quest 01: verifier passes with git + user.name + user.email configured" {
-  # tmp_setup already sets user.name + user.email in the sandbox.
+@test "quest 01: verifier passes with git + user.name + user.email + init.defaultBranch configured" {
+  # tmp_setup already sets user.name + user.email + init.defaultBranch in the sandbox.
   mkdir -p "$TMP_DIR/work"
   run run_verifier "$QUEST" "work"
-  [[ "$output" == *"3 / 3"* ]]
+  [[ "$output" == *"4 / 4"* ]]
   [[ "$output" == *"Congratulations"* || "$output" == *"CONGRATULATIONS"* ]]
 }
 
@@ -21,7 +21,7 @@ QUEST="01-la-guilde-des-archivistes"
   git config --global --unset user.name
   mkdir -p "$TMP_DIR/work"
   run run_verifier "$QUEST" "work"
-  [[ "$output" != *"3 / 3"* ]]
+  [[ "$output" != *"4 / 4"* ]]
   [[ "$output" == *"nom est configuré"* ]]
 }
 
@@ -29,6 +29,22 @@ QUEST="01-la-guilde-des-archivistes"
   git config --global --unset user.email
   mkdir -p "$TMP_DIR/work"
   run run_verifier "$QUEST" "work"
-  [[ "$output" != *"3 / 3"* ]]
+  [[ "$output" != *"4 / 4"* ]]
   [[ "$output" == *"email est configuré"* ]]
+}
+
+@test "quest 01: fails when init.defaultBranch is not set to main" {
+  git config --global --unset init.defaultBranch || true
+  mkdir -p "$TMP_DIR/work"
+  run run_verifier "$QUEST" "work"
+  [[ "$output" != *"4 / 4"* ]]
+  [[ "$output" == *"main"* ]]
+}
+
+@test "quest 01: fails when init.defaultBranch is set to master" {
+  git config --global init.defaultBranch master
+  mkdir -p "$TMP_DIR/work"
+  run run_verifier "$QUEST" "work"
+  [[ "$output" != *"4 / 4"* ]]
+  [[ "$output" == *"main"* ]]
 }

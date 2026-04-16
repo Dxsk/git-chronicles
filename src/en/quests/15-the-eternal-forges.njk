@@ -380,7 +380,7 @@ cat ~/.ssh/id_ed25519.pub</code></pre>
 
     <pre data-lang="bash"><code>mkdir chronicles-forge
 cd chronicles-forge
-git init</code></pre>
+git init -b main</code></pre>
 
     <h3>Step 2 - Write the first scroll</h3>
 
@@ -430,7 +430,7 @@ git commit -m "Add notes about the forges and the CI/CD pipeline"</code></pre>
     <h3>Step 4 - Create the Forge (bare repository)</h3>
 
     <pre data-lang="bash"><code>cd ..
-git init --bare eternal-forge.git</code></pre>
+git init -b main --bare eternal-forge.git</code></pre>
 
     <div class="tip">
       <p>A <strong>bare repository</strong> is a Git repository without a working directory - exactly like a GitHub or GitLab server. It only contains Git data, not the working files.</p>

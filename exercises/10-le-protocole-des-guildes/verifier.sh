@@ -39,4 +39,8 @@ check_step 4 "Un commit de merge existe (Protocole respecté)" \
 check_step 5 "La branche de proposition a été nettoyée" \
     '[ "$(git branch | grep -v "main\|master\|\*" | wc -l)" -eq 0 ]'
 
+# ---- Step 6 : Retour sur la branche principale ----
+check_step 6 "Tu es de retour sur la branche principale" \
+    'assert_branch_is . main || assert_branch_is . master'
+
 show_score

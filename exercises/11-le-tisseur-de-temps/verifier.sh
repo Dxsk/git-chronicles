@@ -27,12 +27,19 @@ check_step 1 "Tu es dans un dépôt Git" \
 check_step 2 "Au moins 2 branches existent" \
     '[ "$(git branch -a 2>/dev/null | wc -l)" -ge 2 ]'
 
-# ---- Step 3 : Le reflog montre une activité de stash ----
-check_step 3 "Le reflog montre une activité de stash" \
-    'git reflog show stash 2>/dev/null | grep -q . || git log -g refs/stash --oneline 2>/dev/null | grep -q . || git reflog 2>/dev/null | grep -qi stash'
+# ---- Step 3 : La pile de stash est vide (stash appliqué ou dépilé) ----
+# Note: once git stash pop empties the stash stack, refs/stash is deleted,
+# so there is no durable reflog evidence of past stash activity. We can
+# only check the terminal state: nothing pending.
+check_step 3 "Aucun stash en attente (le tissage du temps est complet)" \
+    '[ -z "$(git stash list 2>/dev/null)" ]'
 
 # ---- Step 4 : Au moins 3 commits existent ----
 check_step 4 "Il y a au moins 3 commits dans l'historique" \
     '[ "$(git log --all --oneline 2>/dev/null | wc -l)" -ge 3 ]'
+
+# ---- Step 5 : Retour sur main ----
+check_step 5 "Tu es de retour sur la branche main" \
+    'assert_branch_is . main'
 
 show_score

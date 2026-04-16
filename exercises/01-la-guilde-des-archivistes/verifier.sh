@@ -22,5 +22,7 @@ show_banner "$QUEST_TITLE"
 check_step 1 "Git est installé" 'command -v git >/dev/null 2>&1'
 check_step 2 "Ton nom est configuré" '[ -n "$(git config --global user.name)" ]'
 check_step 3 "Ton email est configuré" '[ -n "$(git config --global user.email)" ]'
+check_step 4 "Ta branche par défaut est configurée sur 'main'" \
+    '[ "$(git config --global init.defaultBranch)" = "main" ]'
 
 show_score

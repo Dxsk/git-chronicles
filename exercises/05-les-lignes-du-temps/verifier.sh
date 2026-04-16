@@ -27,9 +27,11 @@ check_step 1 "Tu es dans un dépôt Git" \
 check_step 2 "Le fichier .gitignore existe" \
     '[ -f .gitignore ]'
 
-# ---- Step 3 : Le .gitignore contient un pattern pour les .log ----
+# ---- Step 3 : .gitignore couvre effectivement les fichiers .log ----
+# We rely on git check-ignore rather than a hardcoded regex so that the
+# student can use any valid pattern (*.log, **/*.log, debug.log, ...).
 check_step 3 "Le .gitignore ignore les fichiers .log" \
-    'grep -qE "^\*\.log$|^debug\.log$" .gitignore'
+    'printf "%s\n" "debug.log" | git check-ignore --stdin -q'
 
 # ---- Step 4 : debug.log n'est plus tracké ----
 check_step 4 "debug.log n'est plus suivi par Git" \

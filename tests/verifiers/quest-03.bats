@@ -14,16 +14,24 @@ QUEST="03-le-premier-parchemin"
 
 # --- Helpers --------------------------------------------------------------
 
-# Build the canonical "happy path" scenario: a Git repo with 2 commits,
-# the second one adding parchemins/mission.txt.
+# Build the canonical "happy path" scenario: a Git repo with 2 commits
+# (add the shipped template, then complete the mission report), matching
+# the pedagogical flow taught in the quest.
 build_pass_scenario() {
   mkdir -p "$TMP_DIR/mon-archive"
   cd "$TMP_DIR/mon-archive"
   git init -q
-  git commit -q --allow-empty -m "Initialiser l'archive de la Guilde"
   cp "$REPO_ROOT/exercises/$QUEST/parchemins/mission.txt" .
   git add mission.txt
   git commit -q -m "Ajouter l'ordre de mission de la Guilde"
+  cat >> mission.txt <<'EOF'
+
+- Lieu : Foret de Sombrebois, poste n7
+- Creature observee : Wyverne a ecailles argentees
+- Niveau de danger (1-5) : 4
+EOF
+  git add mission.txt
+  git commit -q -m "Completer le rapport d'observation des frontieres"
   cd - >/dev/null
 }
 
@@ -40,7 +48,7 @@ build_pass_scenario() {
   build_pass_scenario
   run run_verifier "$QUEST" "mon-archive"
   [ "$status" -eq 0 ]
-  [[ "$output" == *"4 / 4"* ]]
+  [[ "$output" == *"5 / 5"* ]]
   [[ "$output" == *"CONGRATULATIONS"* || "$output" == *"Congratulations"* ]]
 }
 
@@ -48,7 +56,7 @@ build_pass_scenario() {
   build_pass_scenario
   run run_verifier "$QUEST" "mon-archive" --lang fr
   [ "$status" -eq 0 ]
-  [[ "$output" == *"4 / 4"* ]]
+  [[ "$output" == *"5 / 5"* ]]
   [[ "$output" == *"FÉLICITATIONS"* ]]
 }
 
@@ -59,7 +67,7 @@ build_pass_scenario() {
 # assert on the score line and the absence of the "congratulations" marker.
 
 assert_failure_score() {
-  [[ "$output" != *"4 / 4"* ]]
+  [[ "$output" != *"5 / 5"* ]]
   [[ "$output" != *"Congratulations"* && "$output" != *"CONGRATULATIONS"* ]]
   [[ "$output" != *"FÉLICITATIONS"* ]]
 }
@@ -111,4 +119,18 @@ assert_failure_score() {
   run run_verifier "$QUEST" "mon-archive"
   assert_failure_score
   [[ "$output" == *"personnalisé"* ]]
+}
+
+@test "verifier fails when mission.txt is identical to the shipped template" {
+  mkdir -p "$TMP_DIR/mon-archive"
+  cd "$TMP_DIR/mon-archive"
+  git init -q
+  cp "$REPO_ROOT/exercises/$QUEST/parchemins/mission.txt" .
+  git add mission.txt
+  git commit -q -m "Ajouter l'ordre de mission de la Guilde"
+  git commit -q --allow-empty -m "Deuxieme commit sans modifier le parchemin"
+  cd - >/dev/null
+
+  run run_verifier "$QUEST" "mon-archive"
+  assert_failure_score
 }

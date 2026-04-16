@@ -42,3 +42,28 @@ build_from_bundle() {
   [[ "$output" != *"5 / 5"* ]]
   [[ "$output" == *".gitignore"* ]]
 }
+
+@test "quest 05: fails when .gitignore exists but does not ignore .log files" {
+  build_from_bundle
+  echo "*.tmp" > .gitignore
+  git rm --cached debug.log 2>/dev/null || true
+  git add .gitignore
+  git commit -q -m "Ignore temporary files but not logs"
+  cd - >/dev/null
+
+  run run_verifier "$QUEST" "work"
+  [[ "$output" != *"5 / 5"* ]]
+}
+
+@test "quest 05: passes when .gitignore uses a nested glob such as **/*.log" {
+  build_from_bundle
+  echo "**/*.log" > .gitignore
+  echo "noisy debug line" > debug.log
+  git rm --cached debug.log 2>/dev/null || true
+  git add .gitignore
+  git commit -q -m "Ignore log files everywhere in the tree"
+  cd - >/dev/null
+
+  run run_verifier "$QUEST" "work"
+  [[ "$output" == *"5 / 5"* ]]
+}
