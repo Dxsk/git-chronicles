@@ -23,17 +23,26 @@ show_banner "$QUEST_TITLE"
 check_step 1 "Tu es dans un dépôt Git" \
     'git rev-parse --is-inside-work-tree'
 
-# ---- Step 2 : Le fichier GitHub Actions existe ----
-check_step 2 "Le fichier .github/workflows/ci.yml existe" \
-    'ls .github/workflows/*.yml >/dev/null 2>&1'
+# ---- Step 2 : Le fichier GitHub Actions existe et déclare au moins un job
+# Wrapped in a subshell so the loop-internal 'exit' only returns from the
+# check, not from the verifier as a whole.
+check_step 2 "Le fichier .github/workflows/*.yml déclare un 'jobs:'" \
+    '
+    (
+        for f in .github/workflows/*.yml .github/workflows/*.yaml; do
+            [ -f "$f" ] && assert_file_contains "$f" "^jobs:" && exit 0
+        done
+        exit 1
+    )
+    '
 
-# ---- Step 3 : Le fichier GitLab CI existe ----
-check_step 3 "Le fichier .gitlab-ci.yml existe" \
-    '[ -f ".gitlab-ci.yml" ]'
+# ---- Step 3 : Le fichier GitLab CI existe et définit au moins un job
+check_step 3 "Le fichier .gitlab-ci.yml définit au moins un job (script:)" \
+    'assert_file_contains ".gitlab-ci.yml" "^[[:space:]]*script:"'
 
-# ---- Step 4 : Le fichier Bitbucket Pipelines existe ----
-check_step 4 "Le fichier bitbucket-pipelines.yml existe" \
-    '[ -f "bitbucket-pipelines.yml" ]'
+# ---- Step 4 : Le fichier Bitbucket Pipelines existe et déclare 'pipelines:'
+check_step 4 "Le fichier bitbucket-pipelines.yml déclare 'pipelines:'" \
+    'assert_file_contains "bitbucket-pipelines.yml" "^pipelines:"'
 
 # ---- Step 5 : Le script de test existe ----
 check_step 5 "Le script de test scripts/test.sh existe" \
