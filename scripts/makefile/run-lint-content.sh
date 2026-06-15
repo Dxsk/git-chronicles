@@ -52,10 +52,7 @@ fi
 hits_checkout=$(grep -rnE --include='*.njk' \
     'git[[:space:]]+checkout[[:space:]]+(-[bB][[:space:]]+)?[a-zA-Z0-9._][a-zA-Z0-9._-]*' \
     src/ 2>/dev/null \
-    | grep -vE '#.*git[[:space:]]+checkout' \
-    | grep -vE 'git[[:space:]]+checkout[[:space:]]+v[0-9]' \
-    | grep -vE '/06-larbre-des-possibles\.njk:' \
-    | grep -vE '/06-the-tree-of-possibilities\.njk:' \
+    | grep -vE '#.*git[[:space:]]+checkout|git[[:space:]]+checkout[[:space:]]+v[0-9]|/06-(larbre-des-possibles|the-tree-of-possibilities)\.njk:' \
     || true)
 
 if [ -n "$hits_checkout" ]; then

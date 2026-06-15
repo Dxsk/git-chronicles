@@ -4,24 +4,15 @@
 # rigor-sweep work. These helpers are used by quest verifiers via
 # check_step, so they must behave correctly in isolation first.
 
-setup() {
-  TMP_DIR="$(mktemp -d)"
-  export TMP_DIR
-  export GIT_CONFIG_GLOBAL="$TMP_DIR/.gitconfig"
-  export GIT_CONFIG_SYSTEM=/dev/null
-  git config --global user.email "test@git-chronicles.local"
-  git config --global user.name  "Test Runner"
-  git config --global init.defaultBranch main
-  git config --global commit.gpgsign false
+load ../verifiers/helpers
 
-  REPO_ROOT="$(cd "$(dirname "${BATS_TEST_FILENAME}")/../.." && pwd)"
+setup() {
+  tmp_setup
   # shellcheck source=/dev/null
   source "$REPO_ROOT/lib/common.sh"
 }
 
-teardown() {
-  [[ -n "${TMP_DIR:-}" && -d "$TMP_DIR" ]] && rm -rf "$TMP_DIR"
-}
+teardown() { tmp_teardown; }
 
 # --- assert_remote_name ----------------------------------------------------
 

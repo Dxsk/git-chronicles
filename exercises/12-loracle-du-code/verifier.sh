@@ -37,21 +37,10 @@ check_step 2 "git bisect a été utilisé (trace dans le reflog)" \
 # whose subject matches the correctif tip. A manual edit with a
 # different commit message cannot satisfy this check.
 check_step 3 "Le commit de la branche correctif a été appliqué (cherry-pick)" \
-    '
-    (
-        fix_ref=""
-        for candidate in origin/correctif correctif refs/remotes/origin/correctif; do
-            if git rev-parse --verify --quiet "$candidate" >/dev/null 2>&1; then
-                fix_ref="$candidate"
-                break
-            fi
-        done
-        [ -n "$fix_ref" ] || exit 1
-        fix_subject="$(git log -1 --format=%s "$fix_ref")"
-        [ -n "$fix_subject" ] || exit 1
-        git log HEAD --format=%s | grep -qF -- "$fix_subject"
-    )
-    '
+    'fix_ref=$(git rev-parse --verify --quiet origin/correctif || git rev-parse --verify --quiet correctif) &&
+     fix_subject=$(git log -1 --format=%s "$fix_ref") &&
+     [ -n "$fix_subject" ] &&
+     git log HEAD --format=%s | grep -qF -- "$fix_subject"'
 
 # ---- Step 4 : Le grimoire ne contient plus le mot CORROMPU ----
 check_step 4 "Le grimoire ne contient plus le mot CORROMPU" \
